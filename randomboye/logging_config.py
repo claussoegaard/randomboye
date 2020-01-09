@@ -34,7 +34,7 @@ LOGGING_CONFIG = {
     },
     'handlers': {
         'info_console_handler': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'formatter': 'info',
             'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',
