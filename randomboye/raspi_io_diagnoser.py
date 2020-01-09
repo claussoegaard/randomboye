@@ -5,7 +5,7 @@ from gpiozero import (
 from signal import pause
 # from RPLCD.gpio import CharLCD
 from RPi import GPIO
-# import time
+import time
 # import os
 # import warnings
 
@@ -33,8 +33,10 @@ class RaspberryPiIODiagnoser:
         self.front_button = Button(
             self.front_button_gpio,
             # hold_time=self.mintime,
-            hold_repeat=True
+            # hold_repeat=True
         )
+
+        self.front_button__
 
         self.front_button.when_pressed = self.front_button__when_pressed
         self.front_button.when_held = self.front_button__when_held
@@ -43,7 +45,7 @@ class RaspberryPiIODiagnoser:
         self.back_button = Button(
             self.back_button_gpio,
             # hold_time=self.mintime,
-            hold_repeat=True
+            # hold_repeat=True
         )
 
         self.back_button.when_pressed = self.back_button__when_pressed
@@ -56,12 +58,15 @@ class RaspberryPiIODiagnoser:
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.front_button_last_pressed = time.time()
 
     def front_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.front_button_last_held = time.time()
 
     def front_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.front_button_last_released = time.time()
 
     def back_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -71,3 +76,24 @@ class RaspberryPiIODiagnoser:
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
+
+
+"""
+Times Front Button:
+('04:55:34,118', '04:55:34,317'),
+('04:55:55,979', '04:55:56,241'),
+('04:58:49,928', '04:58:50,050'),
+('04:59:12,629', '04:59:12,887'),
+('04:59:40,564', '04:59:40,756'),
+('05:00:00,903', '05:00:01,264'),
+('05:00:19,886', '05:00:19,994')
+
+('04:57:40,652', '04:57:40,745') --No bug
+('04:58:10,908', '04:58:11,013') --No bug
+
+('', '')
+('', '')
+('', '')
+('', '')
+('', '')
+"""
