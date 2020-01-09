@@ -79,17 +79,15 @@ class RaspberryPiIODiagnoser:
 
         self.lcd.create_char(0, smiley)
 
-        smileys = "".join([chr(0) for _ in range(16)])
+        s = chr(0)
 
-        # for i in range(2):
-        #     for j in range(16):
+        line1 = f"{s}{s}{s}{s}{s}{s}PI{s}{s}{s}{s}{s}{s}{s}{s}"
+        line2 = f"{s}{s}{s}{s}DIAGNOSH{s}{s}{s}{s}"
+
         self.lcd.cursor_pos = (0, 0)
-        self.lcd.write_string(smileys)
+        self.lcd.write_string(line1)
         self.lcd.cursor_pos = (1, 0)
-        self.lcd.write_string(smileys)
-        # self.lcd.cursor_pos = (1, 14)
-        # self.lcd.create_char(0, smiley)
-        # self.lcd.write_string(chr(0))
+        self.lcd.write_string(line2)
 
         pause()
 
