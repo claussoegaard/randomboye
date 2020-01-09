@@ -30,8 +30,8 @@ class RaspberryPiIODiagnoser:
             8: [40, 38, 36, 32, 33, 31, 29, 23]
         }
 
-        self.front_button = Button(
-            self.front_button_gpio,
+        self.front_button = RaspberryPiButton(
+            pin=self.front_button_gpio,
             # hold_time=self.mintime,
             # hold_repeat=True
         )
@@ -40,8 +40,8 @@ class RaspberryPiIODiagnoser:
         self.front_button.when_held = self.front_button__when_held
         self.front_button.when_released = self.front_button__when_released
 
-        self.back_button = Button(
-            self.back_button_gpio,
+        self.back_button = RaspberryPiButton(
+            pin=self.back_button_gpio,
             # hold_time=self.mintime,
             # hold_repeat=True
         )
@@ -74,6 +74,11 @@ class RaspberryPiIODiagnoser:
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
+
+
+class RaspberryPiButton(Button):
+    def __init__(self, pin):
+        super.__init__(pin)
 
 
 """
