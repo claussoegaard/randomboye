@@ -2,11 +2,11 @@ from gpiozero import (
     Button,
     LED
 )
-from RPLCD.gpio import CharLCD
+# from RPLCD.gpio import CharLCD
 from RPi import GPIO
-import time
-import os
-import warnings
+# import time
+# import os
+# import warnings
 
 import logging
 from logging.config import dictConfig
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 FUNCTION_CALL_MSG = 'function_call'
 
 
-class RaspberryPi:
+class RaspberryPiDiagnoser:
     def __init__(self):
         logger.debug(FUNCTION_CALL_MSG)
         GPIO.setwarnings(False)
