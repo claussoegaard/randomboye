@@ -51,20 +51,20 @@ class RaspberryPiIODiagnoser:
 
         self.back_led = LED(self.back_led_gpio)
 
-    def front_button__when_pressed():
+    def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
 
-    def front_button__when_held():
+    def front_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
 
-    def front_button__when_released():
+    def front_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
 
-    def back_button__when_pressed():
+    def back_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
 
-    def back_button__when_held():
+    def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
 
-    def back_button__when_released():
+    def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
