@@ -76,9 +76,15 @@ class RaspberryPiIODiagnoser:
             0b01110,
             0b00000,
         )
-        self.lcd.cursor_pos = (1, 14)
-        self.lcd.create_char(0, smiley)
-        self.lcd.write_string(chr(0))
+
+        for i in range(2):
+            for j in range(16):
+                self.lcd.cursor_pos = (i, j)
+                self.lcd.create_char(0, smiley)
+                self.lcd.write_string(chr(0))
+        # self.lcd.cursor_pos = (1, 14)
+        # self.lcd.create_char(0, smiley)
+        # self.lcd.write_string(chr(0))
 
         pause()
 
