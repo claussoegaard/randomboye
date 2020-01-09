@@ -36,8 +36,6 @@ class RaspberryPiIODiagnoser:
             # hold_repeat=True
         )
 
-        self.front_button__
-
         self.front_button.when_pressed = self.front_button__when_pressed
         self.front_button.when_held = self.front_button__when_held
         self.front_button.when_released = self.front_button__when_released
@@ -58,15 +56,15 @@ class RaspberryPiIODiagnoser:
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.front_button_last_pressed = time.time()
+        self.front_button.last_pressed = time.time()
 
     def front_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.front_button_last_held = time.time()
+        self.front_button.last_held = time.time()
 
     def front_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.front_button_last_released = time.time()
+        self.front_button.last_released = time.time()
 
     def back_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
