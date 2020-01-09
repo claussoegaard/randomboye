@@ -1,10 +1,10 @@
-from discogs_collection import DiscogsCollection
+# from discogs_collection import DiscogsCollection
+from raspi_io_diagnoser import RaspberryPiIODiagnoser
 
 
 def main():
     print("Ran Main Randomboye")
-    my_collection = DiscogsCollection("CWhLmAdMsIhLXCeIfCXDZszstBbeWxbsTlmvntFf")
-    my_collection.get_random_record()
+    pi = RaspberryPiIODiagnoser()
 
 
 if __name__ == '__main__':

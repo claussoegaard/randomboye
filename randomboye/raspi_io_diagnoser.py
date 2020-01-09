@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 FUNCTION_CALL_MSG = 'function_call'
 
 
-class RaspberryPiDiagnoser:
+class RaspberryPiIODiagnoser:
     def __init__(self):
         logger.debug(FUNCTION_CALL_MSG)
         GPIO.setwarnings(False)
