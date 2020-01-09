@@ -3,7 +3,7 @@ from gpiozero import (
     LED
 )
 from signal import pause
-# from RPLCD.gpio import CharLCD
+from RPLCD.gpio import CharLCD
 from RPi import GPIO
 import time
 # import os
@@ -25,10 +25,20 @@ class RaspberryPiIODiagnoser:
         self.front_button_gpio = 4
         self.back_button_gpio = 3
         self.back_led_gpio = 14  # power LED
+        self.bit_mode = 4
         self.pin_modes = {
             4: [33, 31, 29, 23],
             8: [40, 38, 36, 32, 33, 31, 29, 23]
         }
+
+        self.lcd = CharLCD(
+            numbering_mode=GPIO.BOARD,
+            cols=16,
+            rows=2,
+            pin_rs=37,
+            pin_e=35,
+            pins_data=self.pin_modes[self.bit_mode]
+        )
 
         self.front_button = Button(
             pin=self.front_button_gpio,
@@ -53,6 +63,22 @@ class RaspberryPiIODiagnoser:
         self.back_button.when_released = self.back_button__when_released
 
         self.back_led = LED(self.back_led_gpio)
+
+        self.lcd.clear()
+        self.lcd.home()
+        smiley = (
+            0b00000,
+            0b01010,
+            0b01010,
+            0b00000,
+            0b10001,
+            0b10001,
+            0b01110,
+            0b00000,
+        )
+        self.lcd.cursor_pos = (1, 14)
+        self.lcd.create_char(0, smiley)
+        self.lcd.write_string(chr(0))
 
         pause()
 
