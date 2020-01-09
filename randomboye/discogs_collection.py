@@ -17,7 +17,6 @@ class DiscogsCollection():
         logger.debug(FUNCTION_CALL_MSG)
         self._collection = {}
         self.token = token
-        # self.collection_file_name = collection_file_name
         self.absolute_collection_file_path = f"{os.path.dirname(__file__)}/{collection_file_name}"
         self.collection_file_exists = os.path.isfile(self.absolute_collection_file_path)
         if not self.collection_file_exists:
