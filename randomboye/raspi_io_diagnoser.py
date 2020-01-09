@@ -2,6 +2,7 @@ from gpiozero import (
     Button,
     LED
 )
+from signal import pause
 # from RPLCD.gpio import CharLCD
 from RPi import GPIO
 # import time
@@ -50,6 +51,8 @@ class RaspberryPiIODiagnoser:
         self.back_button.when_released = self.back_button__when_released
 
         self.back_led = LED(self.back_led_gpio)
+
+        pause()
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
