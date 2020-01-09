@@ -39,15 +39,15 @@ class RaspberryPiIODiagnoser:
         self.front_button.when_held = self.front_button__when_held
         self.front_button.when_released = self.front_button__when_released
 
-        self.back_button.when_pressed = self.back_button__when_pressed
-        self.back_button.when_held = self.back_button__when_held
-        self.back_button.when_released = self.back_button__when_released
-
         self.back_button = Button(
             self.back_button_gpio,
             # hold_time=self.mintime,
             hold_repeat=True
         )
+
+        self.back_button.when_pressed = self.back_button__when_pressed
+        self.back_button.when_held = self.back_button__when_held
+        self.back_button.when_released = self.back_button__when_released
 
         self.back_led = LED(self.back_led_gpio)
 
