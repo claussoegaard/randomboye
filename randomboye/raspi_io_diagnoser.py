@@ -81,7 +81,7 @@ class RaspberryPiIODiagnoser:
 
         s = chr(0)
 
-        line1 = f"{s}{s}{s}{s}{s}{s}PI{s}{s}{s}{s}{s}{s}{s}{s}"
+        line1 = f"{s}{s}{s}{s}{s}{s}{s}PI{s}{s}{s}{s}{s}{s}{s}"
         line2 = f"{s}{s}{s}{s}DIAGNOSH{s}{s}{s}{s}"
 
         self.lcd.cursor_pos = (0, 0)
