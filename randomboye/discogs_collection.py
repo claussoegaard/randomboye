@@ -40,9 +40,11 @@ class DiscogsCollection():
 
     @property
     def collection(self):
+        logger.debug(FUNCTION_CALL_MSG)
         return self._collection
 
     def get_collection_from_discogs(self):
+        logger.debug(FUNCTION_CALL_MSG)
         discogs_collection = self.identity.collection_folders[0]
         collection = {}
         collection['record_count'] = discogs_collection.count
@@ -57,12 +59,14 @@ class DiscogsCollection():
         return collection
 
     def get_collection_from_file(self):
+        logger.debug(FUNCTION_CALL_MSG)
         with open(self.absolute_collection_file_path, "r") as f:
             collection = json.load(f)
         logger.info(f"Collection with {collection['record_count']} records fetched from disk.")
         return collection
 
     def write_collection_to_file(self):
+        logger.debug(FUNCTION_CALL_MSG)
         try:
             with open(self.absolute_collection_file_path, "w") as f:
                 try:
@@ -78,9 +82,12 @@ class DiscogsCollection():
             logger.error(e)
 
     def get_random_record(self):
+        logger.debug(FUNCTION_CALL_MSG)
         random_record = {}
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)
         random_record['artist'] = self.collection['records'][record_number]['artist']
         random_record['title'] = self.collection['records'][record_number]['title']
+        random_record['number'] = record_number
+        logger.info(f"Random record: {random_record}")
         return random_record
