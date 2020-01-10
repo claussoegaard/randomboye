@@ -89,7 +89,7 @@ class RaspberryPiIODiagnoser:
         self.lcd.cursor_pos = (1, 0)
         self.lcd.write_string(line2)
 
-        pause()
+        # pause()
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)

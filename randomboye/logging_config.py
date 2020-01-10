@@ -14,17 +14,22 @@ LOGGING_CONFIG = {
     'loggers': {
         '': {  # root logger
             'level': 'NOTSET',
-            'handlers': ['info_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+            'handlers': ['thread_debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
         },
         'discogs_collection': {
             'level': 'DEBUG',
             'propagate': False,
-            'handlers': ['info_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+            'handlers': ['thread_debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
         },
         'raspi_io_diagnoser': {
             'level': 'DEBUG',
             'propagate': False,
-            'handlers': ['info_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+            'handlers': ['thread_debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+        },
+        'misc_stuff': {
+            'level': 'DEBUG',
+            'propagate': False,
+            'handlers': ['thread_debug_console_handler', 'thread_debug_file_handler', 'info_file_handler', 'error_file_handler'],
         },
         # 'looper': {
         #     'level': 'INFO',
@@ -33,7 +38,7 @@ LOGGING_CONFIG = {
         # },
     },
     'handlers': {
-        'info_console_handler': {
+        'debug_console_handler': {
             'level': 'DEBUG',
             'formatter': 'info',
             'class': 'logging.StreamHandler',
@@ -53,13 +58,6 @@ LOGGING_CONFIG = {
             'filename': f'{LOGGING_FOLDER}/info.log',
             'mode': 'a',
         },
-        # 'looper_info_file_handler': {
-        #     'level': 'INFO',
-        #     'formatter': 'looper_info',
-        #     'class': 'logging.FileHandler',
-        #     'filename': 'looper_info.log',
-        #     'mode': 'a',
-        # },
         'error_file_handler': {
             'level': 'WARNING',
             'formatter': 'error',
@@ -67,6 +65,26 @@ LOGGING_CONFIG = {
             'filename': f'{LOGGING_FOLDER}/error.log',
             'mode': 'a',
         },
+        'thread_debug_console_handler': {
+            'level': 'DEBUG',
+            'formatter': 'thread_debug',
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+        },
+        'thread_debug_file_handler': {
+            'level': 'DEBUG',
+            'formatter': 'thread_debug',
+            'class': 'logging.FileHandler',
+            'filename': f'{LOGGING_FOLDER}/thread_debug.log',
+            'mode': 'a',
+        },
+        # 'looper_info_file_handler': {
+        #     'level': 'INFO',
+        #     'formatter': 'looper_info',
+        #     'class': 'logging.FileHandler',
+        #     'filename': 'looper_info.log',
+        #     'mode': 'a',
+        # },
         # 'looper_error_file_handler': {
         #     'level': 'WARNING',
         #     'formatter': 'looper_error',
@@ -82,12 +100,15 @@ LOGGING_CONFIG = {
         'info': {
             'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(funcName)s :: %(lineno)s :: %(message)s'
         },
-        # 'looper_info': {
-        #     'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(threadName)s :: %(thread)d :: %(lineno)s :: %(message)s'
-        # },
         'error': {
             'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(process)d :: %(module)s :: %(funcName)s :: %(lineno)s :: %(message)s'
         },
+        'thread_debug': {
+            'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(funcName)s :: %(threadName)s :: %(thread)d :: %(lineno)s :: %(message)s'
+        },
+        # 'looper_info': {
+        #     'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(threadName)s :: %(thread)d :: %(lineno)s :: %(message)s'
+        # },
         # 'looper_error': {
         #     'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(process)d :: %(module)s :: %(threadName)s :: %(thread)d :: %(lineno)s :: %(message)s'
         # },
