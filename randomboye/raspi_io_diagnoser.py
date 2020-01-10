@@ -53,7 +53,7 @@ class RaspberryPiIODiagnoser:
 
         self.back_button = Button(
             pin=self.back_button_gpio,
-            bounce_time=0.1,
+            # bounce_time=0.1,
             # hold_time=self.mintime,
             # hold_repeat=True
         )
