@@ -1,3 +1,4 @@
+from randomboye.log_setup import config
 
 
 def main():
