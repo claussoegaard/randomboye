@@ -1,23 +1,19 @@
+from definitions import ROOT_DIR
 from random import randint
 import json
 import discogs_client
 import os
 
-import logging
-from logging.config import dictConfig
-from logging_config import LOGGING_CONFIG
-
-dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
-FUNCTION_CALL_MSG = 'function_call'
+from logs.config import logger
+logger = logger(__name__)
 
 
 class DiscogsCollection():
     def __init__(self, token, collection_file_name="discogs_collection.txt", refresh_collection=False):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         self._collection = {}
         self.token = token
-        self.absolute_collection_file_path = f"{os.path.dirname(__file__)}/{collection_file_name}"
+        self.absolute_collection_file_path = f"{ROOT_DIR}/data/{collection_file_name}"
         self.collection_file_exists = os.path.isfile(self.absolute_collection_file_path)
         if not self.collection_file_exists:
             self._collection = self.get_collection_from_discogs()
@@ -30,7 +26,7 @@ class DiscogsCollection():
 
     @property
     def identity(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         client = discogs_client.Client(
             'RandomDiscogsRecord/0.1',
             user_token=f"{self.token}"
@@ -39,11 +35,11 @@ class DiscogsCollection():
 
     @property
     def collection(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         return self._collection
 
     def get_collection_from_discogs(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         discogs_collection = self.identity.collection_folders[0]
         collection = {}
         collection['record_count'] = discogs_collection.count
@@ -58,14 +54,14 @@ class DiscogsCollection():
         return collection
 
     def get_collection_from_file(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         with open(self.absolute_collection_file_path, "r") as f:
             collection = json.load(f)
         logger.info(f"Collection with {collection['record_count']} records fetched from disk.")
         return collection
 
     def write_collection_to_file(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         try:
             with open(self.absolute_collection_file_path, "w") as f:
                 try:
@@ -81,7 +77,7 @@ class DiscogsCollection():
             logger.error(e)
 
     def get_random_record(self):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug('function_call')
         random_record = {}
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)

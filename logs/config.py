@@ -1,8 +1,9 @@
 import os
-import pathlib
-current_folder = str(pathlib.Path(__file__).parent.absolute())
-full_path_to_logs = current_folder + "/logs"
-# LOGGING_FOLDER = "logs"
+from definitions import ROOT_DIR
+import logging
+from logging.config import dictConfig
+
+full_path_to_logs = f"{ROOT_DIR}/logs/logs"
 
 # Creating logs dir if it doesn't already exist
 if not os.path.exists(full_path_to_logs):
@@ -10,6 +11,7 @@ if not os.path.exists(full_path_to_logs):
 
 # Good example of configs:
 # https://stackoverflow.com/questions/7507825/where-is-a-complete-example-of-logging-config-dictconfig
+
 
 LOGGING_CONFIG = {
     'version': 1,
@@ -38,7 +40,7 @@ LOGGING_CONFIG = {
     'handlers': {
         'debug_console_handler': {
             'level': 'DEBUG',
-            'formatter': 'info',
+            'formatter': 'debug',
             'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',
         },
@@ -46,28 +48,25 @@ LOGGING_CONFIG = {
             'level': 'DEBUG',
             'formatter': 'debug',
             'class': 'logging.FileHandler',
-            'filename': f'{current_folder}/debug.log',
+            'filename': f'{full_path_to_logs}/debug.log',
             'mode': 'a',
         },
         'info_file_handler': {
             'level': 'INFO',
             'formatter': 'info',
             'class': 'logging.FileHandler',
-            'filename': f'{current_folder}/info.log',
+            'filename': f'{full_path_to_logs}/info.log',
             'mode': 'a',
         },
         'error_file_handler': {
             'level': 'WARNING',
             'formatter': 'error',
             'class': 'logging.FileHandler',
-            'filename': f'{current_folder}/error.log',
+            'filename': f'{full_path_to_logs}/error.log',
             'mode': 'a',
         },
     },
     'formatters': {
-        # 'debug': {
-        #     'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(funcName)s :: %(lineno)s :: %(message)s'
-        # },
         'info': {
             'format': '%(asctime)s :: %(levelname)s :: %(name)s :: %(module)s :: %(funcName)s :: %(lineno)s :: %(message)s'
         },
@@ -79,3 +78,8 @@ LOGGING_CONFIG = {
         },
     },
 }
+
+
+def logger(module):
+    dictConfig(LOGGING_CONFIG)
+    return logging.getLogger(module)
