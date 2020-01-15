@@ -6,7 +6,8 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
-from signal import pause
+# from signal import pause
+import threading
 
 from logs.config import logger
 logger = logger(__name__)
@@ -42,9 +43,13 @@ class RaspberryPi(object):
             # hold_repeat=True
         )
 
-        self.front_button.when_pressed = self.front_button__when_pressed
-        self.front_button.when_held = self.front_button__when_held
-        self.front_button.when_released = self.front_button__when_released
+        self.front_button_press_event = threading.Event()
+        self.front_button_hold_event = threading.Event()
+        self.front_button_release_event = threading.Event()
+
+        self.front_button.when_pressed = self.front_button_press_event.set()
+        self.front_button.when_held = self.front_button_hold_event.set()
+        self.front_button.when_released = self.front_button_release_event.set()
 
         self.back_button = Button(
             pin=self.back_button_gpio,
@@ -86,6 +91,14 @@ class RaspberryPi(object):
 
         # pause()
 
+    def run(self):
+        front_button_press = threading.Thread(
+            name="front_button_press",
+            target=self.front_button__when_pressed,
+            args=(self.front_button_press_event)
+        )
+        front_button_press.start()
+
     def shutdown(self, hold_time=6):
         # find how long the button has been held
         p = self.back_button.pressed_time
@@ -98,8 +111,10 @@ class RaspberryPi(object):
             self.led.on()
             os.system("sudo poweroff")
 
-    def front_button__when_pressed(self):
+    def front_button__when_pressed(self, e):
         logger.debug(FUNCTION_CALL_MSG)
+        e.wait()
+        logger.debug("front_button_press event set")
 
     def front_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
