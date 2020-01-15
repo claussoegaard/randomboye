@@ -35,7 +35,7 @@ class RaspberryPi(object):
             pins_data=self.pin_modes[self.bit_mode]
         )
 
-        self.front_button = Button(
+        self.front_button = PiButton(
             pin=self.front_button_gpio,
             bounce_time=0.01,
             hold_time=1,
@@ -46,7 +46,7 @@ class RaspberryPi(object):
         self.front_button.when_held = self.front_button__when_held
         self.front_button.when_released = self.front_button__when_released
 
-        self.back_button = Button(
+        self.back_button = PiButton(
             pin=self.back_button_gpio,
             bounce_time=0.01,
             hold_time=1,
@@ -117,6 +117,14 @@ class RaspberryPi(object):
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.back_led.off()
+
+
+class PiButton(Button):
+    def __init__(self, pin, bounce_time, hold_time):
+        super().__init__(pin, bounce_time, hold_time)
+
+    def blabla(self):
+        logger.debug(FUNCTION_CALL_MSG)
 
 
 """
