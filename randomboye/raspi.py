@@ -16,7 +16,7 @@ logger = logger(__name__)
 class RaspberryPi(object):
     def __init__(self):
         super().__init__()
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
         self.front_button_gpio = 4
         self.back_button_gpio = 3
@@ -126,7 +126,7 @@ class RaspberryPi(object):
 
 class PiButton(Button, threading.Thread):
     def __init__(self, pin, bounce_time, hold_time):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time)
         self.press_event = threading.Event()
         self.hold_event = threading.Event()
