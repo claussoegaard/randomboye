@@ -1,5 +1,7 @@
 from logs.config import logger
 from randomboye.discogs_collection import DiscogsCollection
+from randomboye.raspi import RaspberryPi
+from definitions import FUNCTION_CALL_MSG
 import argparse
 
 logger = logger(__name__)
@@ -14,11 +16,13 @@ args = parser.parse_args()
 
 
 def main():
-    logger.debug('function_call')
+    logger.debug(FUNCTION_CALL_MSG)
 
-    dc = DiscogsCollection(token=args.auth_token, refresh_collection=args.update)
+    pi = RaspberryPi()
 
-    dc.get_random_record()
+    # dc = DiscogsCollection(token=args.auth_token, refresh_collection=args.update)
+
+    # dc.get_random_record()
 
 
 if __name__ == '__main__':

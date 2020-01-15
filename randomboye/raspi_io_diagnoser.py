@@ -2,12 +2,9 @@ from gpiozero import (
     Button,
     LED
 )
-from signal import pause
 from RPLCD.gpio import CharLCD
 from RPi import GPIO
-import time
-# import os
-# import warnings
+from definitions import FUNCTION_CALL_MSG
 
 import logging
 from logging.config import dictConfig
@@ -15,7 +12,6 @@ from logging_config import LOGGING_CONFIG
 
 dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
-FUNCTION_CALL_MSG = 'function_call'
 
 
 class RaspberryPiIODiagnoser:
@@ -43,7 +39,7 @@ class RaspberryPiIODiagnoser:
         self.front_button = Button(
             pin=self.front_button_gpio,
             bounce_time=0.01,
-            # hold_time=self.mintime,
+            hold_time=self.mintime,
             # hold_repeat=True
         )
 
@@ -54,7 +50,7 @@ class RaspberryPiIODiagnoser:
         self.back_button = Button(
             pin=self.back_button_gpio,
             bounce_time=0.01,
-            # hold_time=self.mintime,
+            hold_time=self.mintime,
             # hold_repeat=True
         )
 
@@ -88,8 +84,6 @@ class RaspberryPiIODiagnoser:
         self.lcd.write_string(line1)
         self.lcd.cursor_pos = (1, 0)
         self.lcd.write_string(line2)
-
-        # pause()
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)

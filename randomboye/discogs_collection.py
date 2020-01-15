@@ -1,4 +1,4 @@
-from definitions import ROOT_DIR
+from definitions import ROOT_DIR, FUNCTION_CALL_MSG
 from random import randint
 import json
 import discogs_client
@@ -10,7 +10,7 @@ logger = logger(__name__)
 
 class DiscogsCollection():
     def __init__(self, token, collection_file_name="discogs_collection.txt", refresh_collection=False):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         self._collection = {}
         self.token = token
         self.absolute_collection_file_path = f"{ROOT_DIR}/data/{collection_file_name}"
@@ -26,7 +26,7 @@ class DiscogsCollection():
 
     @property
     def identity(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         client = discogs_client.Client(
             'RandomDiscogsRecord/0.1',
             user_token=f"{self.token}"
@@ -35,11 +35,11 @@ class DiscogsCollection():
 
     @property
     def collection(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         return self._collection
 
     def get_collection_from_discogs(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         discogs_collection = self.identity.collection_folders[0]
         collection = {}
         collection['record_count'] = discogs_collection.count
@@ -54,14 +54,14 @@ class DiscogsCollection():
         return collection
 
     def get_collection_from_file(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         with open(self.absolute_collection_file_path, "r") as f:
             collection = json.load(f)
         logger.info(f"Collection with {collection['record_count']} records fetched from disk.")
         return collection
 
     def write_collection_to_file(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         try:
             with open(self.absolute_collection_file_path, "w") as f:
                 try:
@@ -77,7 +77,7 @@ class DiscogsCollection():
             logger.error(e)
 
     def get_random_record(self):
-        logger.debug('function_call')
+        logger.debug(FUNCTION_CALL_MSG)
         random_record = {}
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)
