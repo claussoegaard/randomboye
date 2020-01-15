@@ -76,8 +76,8 @@ class RaspberryPi(object):
 
         s = chr(0)
 
-        line1 = f"{s}{s}{s}{s}{s}{s}{s}PI{s}{s}{s}{s}{s}{s}{s}"
-        line2 = f"{s}{s}{s}{s}DIAGNOSH{s}{s}{s}{s}"
+        line1 = f"{s*4}RASPBERRY{s*3}"
+        line2 = f"{s*7}PI{s*7}"
 
         self.lcd.cursor_pos = (0, 0)
         self.lcd.write_string(line1)
@@ -91,7 +91,7 @@ class RaspberryPi(object):
         p = self.back_button.pressed_time
         # blink rate will increase the longer we hold
         # the button down. E.g., at 2 seconds, use 1/4 second rate.
-        self.led.blink(on_time=0.5 / p, off_time=0.5 / p)
+        self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
         if p > hold_time:
             self.lcd.clear()
             self.lcd.write_string('Byeeee')
