@@ -121,7 +121,7 @@ class RaspberryPi(object):
 
 class PiButton(Button):
     def __init__(self, pin, bounce_time, hold_time):
-        super().__init__(pin, bounce_time, hold_time)
+        super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time)
 
     def blabla(self):
         logger.debug(FUNCTION_CALL_MSG)
