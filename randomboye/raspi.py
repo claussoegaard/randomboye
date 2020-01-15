@@ -76,7 +76,7 @@ class RaspberryPi(object):
 
         s = chr(0)
 
-        line1 = f"{s*4}RASPBERRY{s*3}"
+        line1 = f"{s*3}RASPBERRY{s*4}"
         line2 = f"{s*7}PI{s*7}"
 
         self.lcd.cursor_pos = (0, 0)
@@ -84,7 +84,7 @@ class RaspberryPi(object):
         self.lcd.cursor_pos = (1, 0)
         self.lcd.write_string(line2)
 
-        pause()
+        # pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
@@ -116,6 +116,7 @@ class RaspberryPi(object):
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.back_led.off()
 
 
 """
