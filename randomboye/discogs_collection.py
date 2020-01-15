@@ -81,8 +81,9 @@ class DiscogsCollection():
         random_record = {}
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)
-        random_record['artist'] = self.collection['records'][record_number]['artist']
-        random_record['title'] = self.collection['records'][record_number]['title']
+        random_record['record'] = self.collection['records'][record_number]
+        # random_record['artist'] = self.collection['records'][record_number]['artist']
+        # random_record['title'] = self.collection['records'][record_number]['title']
         random_record['number'] = record_number
         logger.info(f"Random record: {random_record}")
         return random_record
