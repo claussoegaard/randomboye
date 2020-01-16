@@ -178,8 +178,8 @@ class RaspberryPi(Process):
         for lines in startup_steps_lines:
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
-            self.write_framebuffer(framebuffers)
-            time.sleep(0.5)
+            self.write_framebuffers(framebuffers, start_delay=0.5)
+            # time.sleep(0.5)
             #     framebuffers = create_framebuffers(lines) for lines in startup_steps_lines
             #     self.write_framebuffers(framebuffers)
             # framebuffers = [create_framebuffers(lines) for lines in startup_steps_lines]

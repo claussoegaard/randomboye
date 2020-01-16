@@ -20,10 +20,6 @@ def create_padded_lines(line, n=16):
     ["Slanted And Ench", "lanted And Encha", ..., "ed And Enchanted"]
     "Pavement", 16 will just return:
     ["Pavement        "]
-    if last_repeats > 0, the list item of the padded lines will be repeated
-    last_repeats times. So for "Pavement" with last_repeats=2, output
-    will be:
-    ['Pavement        ', 'Pavement        ', 'Pavement        ']
     """
     lines = []
     steps = max(len(line) - n, 0) + 1
@@ -33,7 +29,7 @@ def create_padded_lines(line, n=16):
 
 
 def create_framebuffers(lines, n=16):
-    framebuffers = []
+    framebuffer_pivoted = []
     steps_of_longest_string = max([max(len(line) - n, 0) + 1 for line in lines])
 
     for line in lines:
@@ -42,16 +38,26 @@ def create_framebuffers(lines, n=16):
         if step_delta > 0:
             last_step_repeast = [padded_lines[-1]] * step_delta
             padded_lines.extend(last_step_repeast)
-        framebuffers.append(padded_lines)
+        framebuffer_pivoted.append(padded_lines)
+
+    # Got lazy here, needed to pivot list to fit format rasperry pi expects,
+    # probably some much smoother way to do this.
+    framebuffers = []
+
+    for i in range(steps_of_longest_string):
+        step_list = []
+        for j in range(len(lines)):
+            step_list.append(framebuffer_pivoted[j][i])
+        framebuffers.append(step_list)
 
     return framebuffers
 
 
-# line1 = "Slanted And Enchanted"
-# line2 = "Pavement"
-# lines = [line1, line2]
+line1 = "Slanted And"
+line2 = "Pavement"
+lines = [line1, line2]
 
-# framebuffers = create_framebuffers(lines)
+framebuffers = create_framebuffers(lines)
 
-# print(framebuffers)
+print(framebuffers)
 # [print(len(x)) for x in framebuffers]
