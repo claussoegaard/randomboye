@@ -8,6 +8,8 @@ from definitions import FUNCTION_CALL_MSG
 import os
 import signal
 from multiprocessing import Process
+import time
+from randomboye.helpers import create_framebuffers
 
 from logs.config import logger
 logger = logger(__name__)
@@ -72,7 +74,8 @@ class RaspberryPi(Process):
         self.lcd.clear()
         # self.lcd.home()
 
-        self.write_framebuffer(self.default_startup_framebuffer())
+        self.default_startup_text()
+        # self.daemon = True
 
         # if self.run:
         # signal.pause()
@@ -90,10 +93,12 @@ class RaspberryPi(Process):
             os.system("sudo poweroff")
 
     def write_framebuffer(self, framebuffer):
-        # Framebuffer must fill entire LCD screen.
-        # Valid framebuffer for 2x16 LCD:
-        # [["I Am A Raspberry"], ["Pi                "]]
-        # No need to clear LCD since all cells will be overwritten
+        """Writes single framebuffer to LCD screen.
+        Framebuffer must fill entire LCD screen.
+        Valid framebuffer for 2x16 LCD:
+        ["I Am A Raspberry", "Pi                "]
+        No need to clear LCD since all cells will be overwritten
+        """
         if len(framebuffer) != self.lcd_rows:
             raise ValueError(f"framebuffer must have exactly {self.lcd_rows} rows")
         if not all([len(row) == self.lcd_cols and isinstance(row, str) for row in framebuffer]):
@@ -109,8 +114,44 @@ class RaspberryPi(Process):
                 print(e)
                 return
 
-    def default_startup_framebuffer(self):
-        self.lcd.home()
+    def write_framebuffers(self, framebuffers, start_delay=3, end_delay=2, scroll_delay=0.4):
+        """Writes N framebuffers to LCD screen.
+        If len(framebuffers) > 1 it will first delay scrolling by start_delay,
+        then it will progress through framebuffers at scroll_delay speed,
+        until it reaches the end, where it will pause for end_delay time.
+        See write_framebuffer() for details on valid framebuffers.
+        Up to caller to implement a loop if desired, and to construct
+        valid framebuffers.
+        """
+        for i, framebuffer in enumerate(framebuffers):
+            self.write_framebuffer(framebuffer)
+            if i == 0:
+                time.sleep(start_delay)
+            elif i == len(framebuffers) - 1:
+                time.sleep(end_delay)
+            else:
+                time.sleep(scroll_delay)
+        # self.write_framebuffer(framebuffers[0])
+
+    # def default_startup_framebuffers(self):
+    #     self.lcd.home()
+    #     smiley = (
+    #         0b00000,
+    #         0b01010,
+    #         0b01010,
+    #         0b00000,
+    #         0b10001,
+    #         0b10001,
+    #         0b01110,
+    #         0b00000,
+    #     )
+    #     self.lcd.create_char(0, smiley)
+    #     s = chr(0)
+    #     line1 = f"{s*3}RASPBERRY{s*4}"
+    #     line2 = f"{s*7}PI{s*7}"
+    #     return [line1, line2]
+
+    def default_startup_text(self):
         smiley = (
             0b00000,
             0b01010,
@@ -123,9 +164,14 @@ class RaspberryPi(Process):
         )
         self.lcd.create_char(0, smiley)
         s = chr(0)
-        line1 = f"{s*3}RASPBERRY{s*4}"
-        line2 = f"{s*7}PI{s*7}"
-        return [line1, line2]
+        lines = [
+            ['Loading', '.'],
+            ['Loading', '..'],
+            ['Loading', '...'],
+            [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
+        ]
+        framebuffers = create_framebuffers(lines)
+        self.write_framebuffers(framebuffers)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
