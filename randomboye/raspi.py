@@ -174,9 +174,9 @@ class RaspberryPi(Process):
         self.lcd.create_char(0, smiley)
         s = chr(0)
         startup_steps_lines = [
-            [r'Loading', r'.'],
-            [r'Loading', r'..'],
-            [r'Loading', r'...'],
+            ['Loading', 'Loading'],
+            ['Loading', 'Loading'],
+            ['Loading', 'Loading'],
             [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         for lines in startup_steps_lines:
