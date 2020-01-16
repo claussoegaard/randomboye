@@ -111,7 +111,7 @@ class RaspberryPi(Process):
             try:
                 self.lcd.write_string(row)
                 # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
-                self.lcd.write_string("\r\n")
+                # self.lcd.write_string("\r\n")
             except Exception as e:
                 print("Something went wrong:")
                 print(e)
