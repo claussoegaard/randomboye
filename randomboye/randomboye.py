@@ -9,7 +9,7 @@ logger = logger(__name__)
 
 def when_held_override():
     logger.debug(FUNCTION_CALL_MSG)
-    os.kill(pi, signal.SIGUSR1)
+    os.kill(pi.pid, signal.SIGUSR1)
 
 
 def start(auth_token, is_test, refresh_collection):
