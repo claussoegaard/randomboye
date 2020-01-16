@@ -107,20 +107,21 @@ class RaspberryPi(Process):
             raise ValueError(error)
         self.lcd.home()
         # full_txt = "\r\n".join()
-        # for row in framebuffer:
-        logger.debug(f"'{framebuffer[0]}'")
-        logger.debug(f"'{framebuffer[1]}'")
-        try:
-            # row.ljust(num_cols)[:num_cols]
-            self.lcd.write_string(framebuffer[0].ljust(16))
-            # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
-            # self.lcd.crlf()
-            self.lcd.write_string('\r\n')
-            self.lcd.write_string(framebuffer[1].ljust(16))
-        except Exception as e:
-            print("Something went wrong:")
-            print(e)
-            return
+        for row in framebuffer:
+            # logger.debug(f"'{framebuffer[0]}'")
+            # logger.debug(f"'{framebuffer[1]}'")
+            try:
+                self.lcd.write_string(row)
+                # row.ljust(num_cols)[:num_cols]
+                # self.lcd.write_string(framebuffer[0].ljust(16))
+                # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
+                self.lcd.crlf()
+                # self.lcd.write_string('\r\n')
+                # self.lcd.write_string(framebuffer[1].ljust(16))
+            except Exception as e:
+                print("Something went wrong:")
+                print(e)
+                return
 
     def write_framebuffers(self, framebuffers, start_delay=3, end_delay=2, scroll_delay=0.4):
         """Writes N framebuffers to LCD screen.
