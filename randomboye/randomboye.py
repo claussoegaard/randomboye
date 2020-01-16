@@ -1,5 +1,5 @@
 from randomboye.discogs_collection import DiscogsCollection
-
+from multiprocessing import Process
 from logs.config import logger
 logger = logger(__name__)
 
@@ -7,7 +7,8 @@ logger = logger(__name__)
 def start(auth_token, is_test, refresh_collection):
     if not is_test:
         from randomboye.raspi import RaspberryPi
-        RaspberryPi()
+        pi = Process(target=RaspberryPi)
+        pi.start()
         logger.debug("After Raspberry Pi Is Init")
     else:
         pass

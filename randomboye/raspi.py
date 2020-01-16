@@ -143,7 +143,7 @@ class RaspberryPi(object):
         # self.run = False
         # self.shutdown()
         # raise SystemExit
-        signal.SIG_DFL
+        # signal.SIG_DFL
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
