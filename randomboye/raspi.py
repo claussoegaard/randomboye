@@ -108,7 +108,8 @@ class RaspberryPi(Process):
         self.lcd.home()
         # full_txt = "\r\n".join()
         # for row in framebuffer:
-        # logger.debug(f"'{row}'")
+        logger.debug(f"'{framebuffer[0]}'")
+        logger.debug(f"'{framebuffer[1]}'")
         try:
             self.lcd.write_string(framebuffer[0])
             # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
