@@ -9,7 +9,7 @@ import os
 import signal
 from multiprocessing import Process
 import time
-from randomboye.helpers import pad_lines
+from randomboye.helpers import create_framebuffers
 
 from logs.config import logger
 logger = logger(__name__)
@@ -170,9 +170,9 @@ class RaspberryPi(Process):
             ['Loading', '...'],
             [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
-        padded_buffers = [pad_lines(lines) for lines in startup_steps_lines]
+        framebuffers = [create_framebuffers(lines) for lines in startup_steps_lines]
         # framebuffers = create_framebuffers(lines)
-        self.write_framebuffers(padded_buffers)
+        self.write_framebuffers(framebuffers)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)

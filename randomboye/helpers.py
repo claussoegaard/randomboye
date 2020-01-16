@@ -13,7 +13,7 @@ def pad(line, n=16, start=0):
     return line
 
 
-def pad_lines(line, n=16):
+def create_padded_lines(line, n=16):
     """Given a string, returns list of padded substrings
     of n length into that string. Example:
     "Slanted And Enchanted", 16 will return:
@@ -37,7 +37,7 @@ def create_framebuffers(lines, n=16):
     steps_of_longest_string = max([max(len(line) - n, 0) + 1 for line in lines])
 
     for line in lines:
-        padded_lines = pad_lines(line, n)
+        padded_lines = create_padded_lines(line, n)
         step_delta = steps_of_longest_string - len(padded_lines)
         if step_delta > 0:
             last_step_repeast = [padded_lines[-1]] * step_delta
