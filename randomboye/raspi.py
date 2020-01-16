@@ -72,7 +72,7 @@ class RaspberryPi(Process):
         self.back_led = LED(self.back_led_gpio)
 
         self.lcd.clear()
-        # self.lcd.home()
+        self.lcd.home()
 
         self.default_startup_text()
         # self.daemon = True
