@@ -141,6 +141,7 @@ class RaspberryPi(Process):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
+        os.kill(self.pid, signal.SIGUSR1)
         # self.run = False
         # self.shutdown()
         # raise SystemExit
