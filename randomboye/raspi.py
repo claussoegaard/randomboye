@@ -17,7 +17,7 @@ class RaspberryPi(object):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
-        self.run = True
+        # self.run = True
         self.front_button_gpio = 4
         self.back_button_gpio = 3
         self.back_led_gpio = 14  # power LED
@@ -73,8 +73,8 @@ class RaspberryPi(object):
 
         self.write_framebuffer(self.default_startup_framebuffer())
 
-        if self.run:
-            pause()
+        # if self.run:
+        pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
@@ -140,8 +140,9 @@ class RaspberryPi(object):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.run = False
+        # self.run = False
         # self.shutdown()
+        raise SystemExit
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
