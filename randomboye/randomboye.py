@@ -1,7 +1,12 @@
+from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 # from multiprocessing import Process
 from logs.config import logger
 logger = logger(__name__)
+
+
+def when_held_override():
+    logger.debug(FUNCTION_CALL_MSG)
 
 
 def start(auth_token, is_test, refresh_collection):
@@ -11,6 +16,7 @@ def start(auth_token, is_test, refresh_collection):
         pi.start()
         logger.debug("After Raspberry Pi Is Init")
         logger.debug(f"{pi}")
+        pi.back_button.when_held = when_held_override
     else:
         pass
 
