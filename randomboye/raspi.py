@@ -6,7 +6,7 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
-from signal import pause
+import signal
 
 from logs.config import logger
 logger = logger(__name__)
@@ -74,7 +74,7 @@ class RaspberryPi(object):
         self.write_framebuffer(self.default_startup_framebuffer())
 
         # if self.run:
-        pause()
+        signal.pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
@@ -142,7 +142,8 @@ class RaspberryPi(object):
         logger.debug(FUNCTION_CALL_MSG)
         # self.run = False
         # self.shutdown()
-        raise SystemExit
+        # raise SystemExit
+        signal.SIG_DFL
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
