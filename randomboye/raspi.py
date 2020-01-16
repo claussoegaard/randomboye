@@ -100,9 +100,12 @@ class RaspberryPi(Process):
         No need to clear LCD since all cells will be overwritten
         """
         if len(framebuffer) != self.lcd_rows:
-            raise ValueError(f"framebuffer must have exactly {self.lcd_rows} rows")
+            error = f"framebuffer must have exactly {self.lcd_rows} rows, has {len(framebuffer)}"
+            raise ValueError(error)
         if not all([len(row) == self.lcd_cols and isinstance(row, str) for row in framebuffer]):
-            raise ValueError(f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long")
+            logger.debug(framebuffer)
+            error = f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long"
+            raise ValueError(error)
         self.lcd.home()
         for row in framebuffer:
             try:
