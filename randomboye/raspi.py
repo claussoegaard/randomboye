@@ -6,7 +6,7 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
-# from signal import pause
+from signal import pause
 # import threading
 
 from logs.config import logger
@@ -70,7 +70,7 @@ class RaspberryPi(object):
 
         self.write_framebuffer(self.default_startup_framebuffer())
 
-        # pause()
+        pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held

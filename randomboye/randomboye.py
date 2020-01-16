@@ -7,6 +7,8 @@ logger = logger(__name__)
 def start(auth_token, is_test, refresh_collection):
     if not is_test:
         from randomboye.raspi import RaspberryPi
+        RaspberryPi()
+        logger.debug("After Raspberry Pi Is Init")
     else:
         pass
 
