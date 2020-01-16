@@ -27,10 +27,13 @@ class RaspberryPi(object):
             8: [40, 38, 36, 32, 33, 31, 29, 23]
         }
 
+        self.lcd_rows = 2
+        self.lcd_cols = 16
+
         self.lcd = CharLCD(
             numbering_mode=GPIO.BOARD,
-            cols=16,
-            rows=2,
+            cols=self.lcd_cols,
+            rows=self.lcd_rows,
             pin_rs=37,
             pin_e=35,
             pins_data=self.pin_modes[self.bit_mode],
@@ -89,10 +92,10 @@ class RaspberryPi(object):
         # Valid framebuffer for 2x16 LCD:
         # [["I Am A Raspberry"], ["Pi                "]]
         # No need to clear LCD since all cells will be overwritten
-        if len(framebuffer) != self.lcd.rows:
-            raise ValueError(f"framebuffer must have exactly {self.lcd.rows} rows")
-        if not all([len(row) == self.lcd.cols and isinstance(row, str) for row in framebuffer]):
-            raise ValueError(f"all rows in framebuffer must be strings, exactly {self.lcd.cols} characters long")
+        if len(framebuffer) != self.lcd_rows:
+            raise ValueError(f"framebuffer must have exactly {self.lcd_rows} rows")
+        if not all([len(row) == self.lcd_cols and isinstance(row, str) for row in framebuffer]):
+            raise ValueError(f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long")
         self.lcd.home()
         for row in framebuffer:
             try:
