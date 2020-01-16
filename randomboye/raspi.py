@@ -73,7 +73,6 @@ class RaspberryPi(Process):
 
         self.lcd.clear()
         self.lcd.home()
-
         self.default_startup_text()
         # self.daemon = True
 
@@ -107,15 +106,16 @@ class RaspberryPi(Process):
             error = f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long"
             raise ValueError(error)
         self.lcd.home()
-        for row in framebuffer:
-            try:
-                self.lcd.write_string(row)
-                # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
-                self.lcd.crlf()
-            except Exception as e:
-                print("Something went wrong:")
-                print(e)
-                return
+        full_txt = "\r\n".join(framebuffer)
+        # for row in framebuffer:
+        try:
+            self.lcd.write_string(full_txt)
+            # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
+            # self.lcd.crlf()
+        except Exception as e:
+            print("Something went wrong:")
+            print(e)
+            return
 
     def write_framebuffers(self, framebuffers, start_delay=3, end_delay=2, scroll_delay=0.4):
         """Writes N framebuffers to LCD screen.
