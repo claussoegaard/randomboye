@@ -40,7 +40,6 @@ class RaspberryPi(Process):
             pin_rs=37,
             pin_e=35,
             pins_data=self.pin_modes[self.bit_mode],
-            # auto_linebreaks=False
         )
 
         self.front_button = Button(
@@ -49,8 +48,6 @@ class RaspberryPi(Process):
             hold_time=1,
             # hold_repeat=True
         )
-
-        # self.front_button.start()
 
         self.front_button.when_pressed = self.front_button__when_pressed
         self.front_button.when_held = self.front_button__when_held
@@ -63,8 +60,6 @@ class RaspberryPi(Process):
             # hold_repeat=True
         )
 
-        # self.back_button.start()
-
         self.back_button.when_pressed = self.back_button__when_pressed
         self.back_button.when_held = self.back_button__when_held
         self.back_button.when_released = self.back_button__when_released
@@ -74,10 +69,6 @@ class RaspberryPi(Process):
         self.lcd.clear()
         self.lcd.home()
         self.default_startup_text()
-        # self.daemon = True
-
-        # if self.run:
-        # signal.pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
@@ -106,18 +97,10 @@ class RaspberryPi(Process):
             error = f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long"
             raise ValueError(error)
         self.lcd.home()
-        # full_txt = "\r\n".join()
         for row in framebuffer:
-            # logger.debug(f"'{framebuffer[0]}'")
-            # logger.debug(f"'{framebuffer[1]}'")
             try:
                 self.lcd.write_string(row)
-                # row.ljust(num_cols)[:num_cols]
-                # self.lcd.write_string(framebuffer[0].ljust(16))
-                # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
                 self.lcd.crlf()
-                # self.lcd.write_string('\r\n')
-                # self.lcd.write_string(framebuffer[1].ljust(16))
             except Exception as e:
                 print("Something went wrong:")
                 print(e)
@@ -140,27 +123,6 @@ class RaspberryPi(Process):
                 time.sleep(end_delay)
             else:
                 time.sleep(scroll_delay)
-                # ['Loading         ']
-                # ['.               ']
-        # self.write_framebuffer(framebuffers[0])
-
-    # def default_startup_framebuffers(self):
-    #     self.lcd.home()
-    #     smiley = (
-    #         0b00000,
-    #         0b01010,
-    #         0b01010,
-    #         0b00000,
-    #         0b10001,
-    #         0b10001,
-    #         0b01110,
-    #         0b00000,
-    #     )
-    #     self.lcd.create_char(0, smiley)
-    #     s = chr(0)
-    #     line1 = f"{s*3}RASPBERRY{s*4}"
-    #     line2 = f"{s*7}PI{s*7}"
-    #     return [line1, line2]
 
     def default_startup_text(self):
         smiley = (
@@ -185,13 +147,6 @@ class RaspberryPi(Process):
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
             self.write_framebuffers(framebuffers, start_delay=0.5)
-            # time.sleep(0.5)
-            #     framebuffers = create_framebuffers(lines) for lines in startup_steps_lines
-            #     self.write_framebuffers(framebuffers)
-            # framebuffers = [create_framebuffers(lines) for lines in startup_steps_lines]
-            # logger.debug(framebuffers)
-            # framebuffers = create_framebuffers(lines)
-        # self.write_framebuffers(framebuffers)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
