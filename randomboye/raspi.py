@@ -134,6 +134,8 @@ class RaspberryPi(Process):
                 time.sleep(end_delay)
             else:
                 time.sleep(scroll_delay)
+                # ['Loading         ']
+                # ['.               ']
         # self.write_framebuffer(framebuffers[0])
 
     # def default_startup_framebuffers(self):
@@ -174,6 +176,7 @@ class RaspberryPi(Process):
             [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         framebuffers = [create_framebuffers(lines) for lines in startup_steps_lines]
+        logger.debug(framebuffers)
         # framebuffers = create_framebuffers(lines)
         self.write_framebuffers(framebuffers)
 
