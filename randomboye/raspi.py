@@ -40,7 +40,7 @@ class RaspberryPi(Process):
             pin_rs=37,
             pin_e=35,
             pins_data=self.pin_modes[self.bit_mode],
-            auto_linebreaks=False
+            # auto_linebreaks=False
         )
 
         self.front_button = Button(
