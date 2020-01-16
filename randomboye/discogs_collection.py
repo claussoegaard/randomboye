@@ -10,7 +10,7 @@ logger = logger(__name__)
 
 class DiscogsCollection():
     def __init__(self, auth_token, collection_file_name="discogs_collection.txt", refresh_collection=False):
-        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self._collection = {}
         self.auth_token = auth_token
         self.absolute_collection_file_path = f"{ROOT_DIR}/data/{collection_file_name}"

@@ -20,7 +20,6 @@ class RaspberryPi(Process):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
-        # self.run = True
         self.front_button_gpio = 4
         self.back_button_gpio = 3
         self.back_led_gpio = 14  # power LED
@@ -106,7 +105,9 @@ class RaspberryPi(Process):
                 print(e)
                 return
 
-    def write_framebuffers(self, framebuffers, start_delay=3, end_delay=2, scroll_delay=0.4):
+    def write_framebuffers(self, framebuffers,
+                           start_delay=3, end_delay=2, scroll_delay=0.4,
+                           end_on_start=True):
         """Writes N framebuffers to LCD screen.
         If len(framebuffers) > 1 it will first delay scrolling by start_delay,
         then it will progress through framebuffers at scroll_delay speed,
@@ -123,6 +124,8 @@ class RaspberryPi(Process):
                 time.sleep(end_delay)
             else:
                 time.sleep(scroll_delay)
+        if end_on_start:
+            self.write_framebuffer(framebuffers[0])
 
     def default_startup_text(self):
         smiley = (
@@ -146,7 +149,7 @@ class RaspberryPi(Process):
         for lines in startup_steps_lines:
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
-            self.write_framebuffers(framebuffers, start_delay=0.5)
+            self.write_framebuffers(framebuffers, start_delay=0.5, end_on_start=False)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)

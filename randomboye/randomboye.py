@@ -1,18 +1,22 @@
 from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
-# import os
-# import signal
-# from multiprocessing import Process
 from logs.config import logger
+from randomboye.helpers import create_framebuffers
 logger = logger(__name__)
 
 
-def when_held_override():
+def front_button_when_pressed_override():
     logger.debug(FUNCTION_CALL_MSG)
+    random_record = dc.get_random_record()
+    artist_title = [random_record['record']['artist'], random_record['record']['title']]
+    record = create_framebuffers(artist_title)
+    pi.write_framebuffers(record)
     # os.kill(pi.pid, signal.SIGUSR1)
 
 
 def start(auth_token, is_test, refresh_collection):
+    global dc
+    dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
     if not is_test:
         from randomboye.raspi import RaspberryPi
         global pi
@@ -20,12 +24,9 @@ def start(auth_token, is_test, refresh_collection):
         pi.start()
         logger.debug("After Raspberry Pi Is Init")
         logger.debug(f"{pi}")
-        # pi.back_button.when_held = when_held_override
+        pi.front_button.when_pressed = front_button_when_pressed_override
     else:
         pass
-
-    dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
-    dc.get_random_record()
 
     pi.join()
 

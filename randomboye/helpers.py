@@ -1,5 +1,3 @@
-# from threading import Thread
-# import time
 
 
 def pad(line, n=16, start=0):
@@ -51,13 +49,3 @@ def create_framebuffers(lines, n=16):
         framebuffers.append(step_list)
 
     return framebuffers
-
-
-line1 = "Slanted And"
-line2 = "Pavement"
-lines = [line1, line2]
-
-framebuffers = create_framebuffers(lines)
-
-print(framebuffers)
-# [print(len(x)) for x in framebuffers]
