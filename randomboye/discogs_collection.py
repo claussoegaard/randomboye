@@ -9,10 +9,10 @@ logger = logger(__name__)
 
 
 class DiscogsCollection():
-    def __init__(self, token, collection_file_name="discogs_collection.txt", refresh_collection=False):
+    def __init__(self, auth_token, collection_file_name="discogs_collection.txt", refresh_collection=False):
         logger.debug(FUNCTION_CALL_MSG)
         self._collection = {}
-        self.token = token
+        self.auth_token = auth_token
         self.absolute_collection_file_path = f"{ROOT_DIR}/data/{collection_file_name}"
         self.collection_file_exists = os.path.isfile(self.absolute_collection_file_path)
         if not self.collection_file_exists:
@@ -29,7 +29,7 @@ class DiscogsCollection():
         logger.debug(FUNCTION_CALL_MSG)
         client = discogs_client.Client(
             'RandomDiscogsRecord/0.1',
-            user_token=f"{self.token}"
+            user_token=f"{self.auth_token}"
         )
         return client.identity()
 
@@ -65,7 +65,6 @@ class DiscogsCollection():
         try:
             with open(self.absolute_collection_file_path, "w") as f:
                 try:
-                    # collection = json.load(f)
                     f.seek(0)
                     json.dump(self.collection, f)
                     f.truncate()
@@ -82,8 +81,6 @@ class DiscogsCollection():
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)
         random_record['record'] = self.collection['records'][record_number]
-        # random_record['artist'] = self.collection['records'][record_number]['artist']
-        # random_record['title'] = self.collection['records'][record_number]['title']
         random_record['number'] = record_number
         logger.info(f"Random record: {random_record}")
         return random_record

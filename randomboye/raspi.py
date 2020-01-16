@@ -6,8 +6,8 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
-from signal import pause
-import threading
+# from signal import pause
+# import threading
 
 from logs.config import logger
 logger = logger(__name__)
@@ -33,38 +33,78 @@ class RaspberryPi(object):
             rows=2,
             pin_rs=37,
             pin_e=35,
-            pins_data=self.pin_modes[self.bit_mode]
+            pins_data=self.pin_modes[self.bit_mode],
+            auto_linebreaks=False
         )
 
-        self.front_button = PiButton(
+        self.front_button = Button(
             pin=self.front_button_gpio,
             bounce_time=0.01,
             hold_time=1,
             # hold_repeat=True
         )
 
-        self.front_button.start()
+        # self.front_button.start()
 
-        # self.front_button.when_pressed = self.front_button__when_pressed
-        # self.front_button.when_held = self.front_button__when_held
-        # self.front_button.when_released = self.front_button__when_released
+        self.front_button.when_pressed = self.front_button__when_pressed
+        self.front_button.when_held = self.front_button__when_held
+        self.front_button.when_released = self.front_button__when_released
 
-        self.back_button = PiButton(
+        self.back_button = Button(
             pin=self.back_button_gpio,
             bounce_time=0.01,
             hold_time=1,
             # hold_repeat=True
         )
 
-        self.back_button.start()
+        # self.back_button.start()
 
-        # self.back_button.when_pressed = self.back_button__when_pressed
-        # self.back_button.when_held = self.back_button__when_held
-        # self.back_button.when_released = self.back_button__when_released
+        self.back_button.when_pressed = self.back_button__when_pressed
+        self.back_button.when_held = self.back_button__when_held
+        self.back_button.when_released = self.back_button__when_released
 
         self.back_led = LED(self.back_led_gpio)
 
         self.lcd.clear()
+        # self.lcd.home()
+
+        self.write_framebuffer(self.default_startup_framebuffer())
+
+        # pause()
+
+    def shutdown(self, hold_time=6):
+        # find how long the button has been held
+        p = self.back_button.pressed_time
+        # blink rate will increase the longer we hold
+        # the button down. E.g., at 2 seconds, use 1/4 second rate.
+        self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
+        if p > hold_time:
+            self.lcd.clear()
+            self.lcd.write_string('Byeeee')
+            self.led.on()
+            os.system("sudo poweroff")
+
+    def write_framebuffer(self, framebuffer):
+        # Framebuffer must fill entire LCD screen.
+        # Valid framebuffer for 2x16 LCD:
+        # [["I Am A Raspberry"], ["Pi                "]]
+        # No need to clear LCD since all cells will be overwritten
+        if len(framebuffer) != self.lcd.rows:
+            raise ValueError(f"framebuffer must have exactly {self.lcd.rows} rows")
+        if not all([len(row) == self.lcd.cols and isinstance(row, str) for row in framebuffer]):
+            raise ValueError(f"all rows in framebuffer must be strings, exactly {self.lcd.cols} characters long")
+        self.lcd.home()
+        for row in framebuffer:
+            try:
+                self.write_string(row)
+                # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
+                self.lcd.crlf()
+            except Exception as e:
+                print("Something went wrong:")
+                print(e)
+                return
+
+    def default_startup_framebuffer(self):
         self.lcd.home()
         smiley = (
             0b00000,
@@ -76,99 +116,78 @@ class RaspberryPi(object):
             0b01110,
             0b00000,
         )
-
         self.lcd.create_char(0, smiley)
-
         s = chr(0)
-
         line1 = f"{s*3}RASPBERRY{s*4}"
         line2 = f"{s*7}PI{s*7}"
+        return [line1, line2]
 
-        self.lcd.cursor_pos = (0, 0)
-        self.lcd.write_string(line1)
-        self.lcd.cursor_pos = (1, 0)
-        self.lcd.write_string(line2)
-
-        # pause()
-
-    # def shutdown(self, hold_time=6):
-    #     # find how long the button has been held
-    #     p = self.back_button.pressed_time
-    #     # blink rate will increase the longer we hold
-    #     # the button down. E.g., at 2 seconds, use 1/4 second rate.
-    #     self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
-    #     if p > hold_time:
-    #         self.lcd.clear()
-    #         self.lcd.write_string('Byeeee')
-    #         self.led.on()
-    #         os.system("sudo poweroff")
-
-    # def front_button__when_pressed(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-
-    # def front_button__when_held(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-
-    # def front_button__when_released(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-
-    # def back_button__when_pressed(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-
-    # def back_button__when_held(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     # self.shutdown()
-
-    # def back_button__when_released(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-        # self.back_led.off()
-
-
-class PiButton(Button, threading.Thread):
-    def __init__(self, pin, bounce_time, hold_time):
-        logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
-        super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time)
-        self.press_event = threading.Event()
-        self.hold_event = threading.Event()
-        self.release_event = threading.Event()
-        self.when_pressed = self.set_press_event
-        self.when_held = self.set_hold_event
-        self.when_released = self.set_release_event
-
-    def set_press_event(self):
+    def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.press_event.set()
 
-    def set_hold_event(self):
+    def front_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.hold_event.set()
 
-    def set_release_event(self):
+    def front_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.release_event.set()
 
-    def press_action(self):
+    def back_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.press_event.wait()
-        logger.debug("Pressed")
 
-    def hold_action(self):
+    def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.hold_event.wait()
-        self.press_event.clear()
-        logger.debug("Held")
+        self.shutdown()
 
-    def release_action(self):
+    def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.release_event.wait()
-        self.hold_event.clear()
-        self.release_event.clear()
-        logger.debug("Released")
+        self.back_led.off()
 
-    def run(self):
-        threading.Thread(name='press', target=self.press_action)
-        threading.Thread(name='hold', target=self.hold_action)
-        threading.Thread(name='release', target=self.release_action)
+
+# class PiButton(Button, threading.Thread):
+#     def __init__(self, pin, bounce_time, hold_time):
+#         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
+#         super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time)
+#         self.press_event = threading.Event()
+#         self.hold_event = threading.Event()
+#         self.release_event = threading.Event()
+#         self.when_pressed = self.set_press_event
+#         self.when_held = self.set_hold_event
+#         self.when_released = self.set_release_event
+
+#     def set_press_event(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.press_event.set()
+
+#     def set_hold_event(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.hold_event.set()
+
+#     def set_release_event(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.release_event.set()
+
+#     def press_action(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.press_event.wait()
+#         logger.debug("Pressed")
+
+#     def hold_action(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.hold_event.wait()
+#         self.press_event.clear()
+#         logger.debug("Held")
+
+#     def release_action(self):
+#         logger.debug(FUNCTION_CALL_MSG)
+#         self.release_event.wait()
+#         self.hold_event.clear()
+#         self.release_event.clear()
+#         logger.debug("Released")
+
+#     def run(self):
+#         threading.Thread(name='press', target=self.press_action)
+#         threading.Thread(name='hold', target=self.hold_action)
+#         threading.Thread(name='release', target=self.release_action)
 
 
 """
