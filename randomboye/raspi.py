@@ -111,7 +111,8 @@ class RaspberryPi(Process):
         logger.debug(f"'{framebuffer[0]}'")
         logger.debug(f"'{framebuffer[1]}'")
         try:
-            self.lcd.write_string(framebuffer[0])
+            # row.ljust(num_cols)[:num_cols]
+            self.lcd.write_string(framebuffer[0].ljust(16))
             # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
             self.lcd.crlf()
             self.lcd.write_string(framebuffer[1])
