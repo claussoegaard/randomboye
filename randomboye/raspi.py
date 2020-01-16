@@ -176,7 +176,8 @@ class RaspberryPi(Process):
             [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         for lines in startup_steps_lines:
-            framebuffers = create_framebuffers(lines)[0]
+            framebuffers = create_framebuffers(lines)
+            logger.debug(framebuffers)
             self.write_framebuffer(framebuffers)
             time.sleep(0.5)
             #     framebuffers = create_framebuffers(lines) for lines in startup_steps_lines
