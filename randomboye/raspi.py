@@ -99,7 +99,7 @@ class RaspberryPi(object):
         self.lcd.home()
         for row in framebuffer:
             try:
-                self.write_string(row)
+                self.lcd.write_string(row)
                 # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
                 self.lcd.crlf()
             except Exception as e:
