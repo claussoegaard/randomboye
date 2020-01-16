@@ -10,6 +10,7 @@ def start(auth_token, is_test, refresh_collection):
         pi = Process(target=RaspberryPi)
         pi.start()
         logger.debug("After Raspberry Pi Is Init")
+        logger.debug(f"{pi}")
     else:
         pass
 
