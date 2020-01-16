@@ -108,10 +108,11 @@ class RaspberryPi(Process):
         self.lcd.home()
         # full_txt = "\r\n".join()
         for row in framebuffer:
+            logger.debug(row)
             try:
                 self.lcd.write_string(row)
                 # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
-                self.lcd.write_string("\n")
+                self.lcd.crlf()
             except Exception as e:
                 print("Something went wrong:")
                 print(e)
