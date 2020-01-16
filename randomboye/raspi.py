@@ -7,12 +7,13 @@ from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
 import signal
+from multiprocessing import Process
 
 from logs.config import logger
 logger = logger(__name__)
 
 
-class RaspberryPi(object):
+class RaspberryPi(Process):
     def __init__(self):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
@@ -74,7 +75,7 @@ class RaspberryPi(object):
         self.write_framebuffer(self.default_startup_framebuffer())
 
         # if self.run:
-        signal.pause()
+        # signal.pause()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
@@ -148,3 +149,6 @@ class RaspberryPi(object):
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.back_led.off()
+
+    def run(self):
+        signal.pause()
