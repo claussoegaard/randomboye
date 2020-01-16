@@ -108,7 +108,7 @@ class RaspberryPi(Process):
         self.lcd.home()
         # full_txt = "\r\n".join()
         for row in framebuffer:
-            logger.debug(row)
+            logger.debug(f"'{row}'")
             try:
                 self.lcd.write_string(row)
                 # self.lcd.write_string(row.ljust(self.lcd.cols)[:self.lcd.cols])
@@ -171,9 +171,9 @@ class RaspberryPi(Process):
         self.lcd.create_char(0, smiley)
         s = chr(0)
         startup_steps_lines = [
-            ['Loading', '.'],
-            ['Loading', '..'],
-            ['Loading', '...'],
+            [r'Loading', r'.'],
+            [r'Loading', r'..'],
+            [r'Loading', r'...'],
             [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         for lines in startup_steps_lines:
