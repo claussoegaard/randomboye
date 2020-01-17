@@ -20,6 +20,7 @@ class RaspberryPi(Process):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
+
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
         self.back_button_gpio = 3
@@ -66,9 +67,7 @@ class RaspberryPi(Process):
 
         self.back_led = LED(self.back_led_gpio)
 
-        self.lcd_cleanup()
-
-        self.default_startup_text()
+        self.startup_method = None
 
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -194,6 +193,11 @@ class RaspberryPi(Process):
         self.back_led.off()
 
     def run(self):
+        self.lcd_cleanup()
+        if self.startup_method is None:
+            self.default_startup_text()
+        else:
+            self.startup_method()
         signal.pause()
 
 
