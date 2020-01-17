@@ -65,6 +65,7 @@ class RandomBoye(object):
         logger.debug(FUNCTION_CALL_MSG)
         if self.current_print_process is not None:
             self.current_print_process.terminate()
+            logger.debug("Blocking until current print process dead")
             self.current_print_process.join()
 
     def print_processes_cleanup(self):
@@ -72,6 +73,7 @@ class RandomBoye(object):
         logger.debug(f"{len(self.print_processes)} threads to clean up")
         while len(self.print_processes) > 0:
             self.print_processes[0].terminate()
+            logger.debug("Blocking for each cleanup step")
             self.print_processes[0].join()
             self.print_processes.pop(0)
 

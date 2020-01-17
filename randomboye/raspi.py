@@ -65,13 +65,13 @@ class RaspberryPi(Process):
 
         self.back_led = LED(self.back_led_gpio)
 
-        self.lcd.clear()
-        self.lcd.home()
+        self.lcd_cleanup()
+
         self.default_startup_text()
 
     def lcd_cleanup(self):
-        self.lcd.clear()
         self.lcd.home()
+        self.lcd.clear()
 
     def shutdown(self, hold_time=6):
         # find how long the button has been held
