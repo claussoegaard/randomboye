@@ -17,7 +17,6 @@ class RandomBoye(object):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
         self.pi = self.get_pi(is_test)
-        self.pi.start()
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
         self.pi.front_button.when_pressed = self.front_button_press_override
@@ -27,6 +26,9 @@ class RandomBoye(object):
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
+
+    def start(self):
+        self.pi.start()
 
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)

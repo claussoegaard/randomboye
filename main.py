@@ -33,6 +33,7 @@ def main():
             raise SystemExit
 
     randomboye = RandomBoye(args.auth_token, args.is_test, args.refresh_collection)
+    randomboye.start()
 
     # randomboye.start(args.auth_token, args.is_test, args.refresh_collection)
 

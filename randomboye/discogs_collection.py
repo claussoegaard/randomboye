@@ -50,8 +50,21 @@ class DiscogsCollection():
             record['title'] = release.release.title
             records.append(record)
         collection['records'] = records
+        artist_index = self.create_artist_index(records)
+        collection['artist_index'] = artist_index
+        collection['artist_count'] = len(artist_index.keys())
         logger.info(f"Collection with {collection['record_count']} records fetched from discogs.")
         return collection
+
+    def create_artist_index(self, records):
+        artist_index = {}
+
+        for i, record in enumerate(records):
+            if record['artist'] not in artist_index.keys():
+                artist_index[record['artist']] = [i]
+            else:
+                artist_index[record['artist']].append(i)
+        return artist_index
 
     def get_collection_from_file(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -80,6 +93,24 @@ class DiscogsCollection():
         random_record = {}
         records_in_collection = self.collection['record_count']
         record_number = randint(0, records_in_collection - 1)
+        random_record = {}
+        random_record['record'] = self.collection['records'][record_number]
+        random_record['number'] = record_number
+        logger.info(f"Random record: {random_record}")
+        return random_record
+
+    def get_record_for_random_artist(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        artist_index = self.collection['artist_index']
+        artist_in_collection = self.collection['artist_count']
+        artist_number = randint(0, artist_in_collection - 1)
+        logger.info(f"Artist number: {artist_number}")
+        random_artist = list(artist_index.keys())[artist_number]
+        random_artist_index = artist_index[random_artist]
+        logger.info(f"Index of random artist: {random_artist_index}")
+        record_index_number = randint(0, len(random_artist_index) - 1)
+        record_number = random_artist_index[record_index_number]
+        random_record = {}
         random_record['record'] = self.collection['records'][record_number]
         random_record['number'] = record_number
         logger.info(f"Random record: {random_record}")
