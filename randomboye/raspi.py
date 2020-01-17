@@ -179,6 +179,10 @@ class RaspberryPi(Process):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
+        framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
+        self.write_framebuffers(framebuffers)
+        time.sleep(2)
+        self.lcd_cleanup()
         os.kill(self.pid, signal.SIGUSR1)
         # self.run = False
         # self.shutdown()
