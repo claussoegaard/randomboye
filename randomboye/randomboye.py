@@ -21,6 +21,7 @@ class RandomBoye(object):
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
         self.print_process = None
+        self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
 
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
@@ -35,6 +36,25 @@ class RandomBoye(object):
             # pi.front_button.when_pressed = front_button_when_pressed_override
         else:
             raise NotImplementedError
+
+    def random_record_framebuffers(self):
+        random_record = self.dc.get_random_record()
+        artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
+        return create_framebuffers(artist_and_title)
+
+    def instructions_framebuffers(self):
+        instructions = [
+            'Press For Random',
+            'Record  d[-_-]b'
+        ]
+        return create_framebuffers(instructions)
+
+    def start_print_process(self, framebuffers):
+        self.print_process = Process(
+            target=self.pi.write_framebuffers,
+            kwargs={'framebuffers': framebuffers}
+        )
+        self.print_process.start()
 
     def terminate_print_process(self):
         if self.print_process is not None:
@@ -59,12 +79,13 @@ class RandomBoye(object):
                     logger.debug("Release After Release - No Action")
                 if self.pi.front_button.latest_event == 'press':
                     self.terminate_print_process()
-                    logger.debug("Release After Press - Random Record Flip")
-                    random_record = self.dc.get_random_record()
-                    artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
-                    record = create_framebuffers(artist_and_title)
-                    self.print_process = Process(target=self.pi.write_framebuffers, kwargs={'framebuffers': record})
-                    self.print_process.start()
+                    if self.state in ['INSTRUCTIONS']:
+                        logger.debug("Release After Press - Random Record")
+                        self.start_print_process(self.random_record_framebuffers())
+                    elif self.state in ['STARTUP', 'RECORD']:
+                        logger.debug("Release After Press - Print Instructions")
+                        self.start_print_process(self.instructions_framebuffers())
+
         finally:
             self.pi.front_button.latest_event = 'release'
 
