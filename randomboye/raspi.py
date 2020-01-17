@@ -42,12 +42,12 @@ class RaspberryPi(Process):
             pin_backlight=40
         )
 
-        GPIO.setup(40, GPIO.OUT)
-        GPIO.output(40, 1)
+        GPIO.setup(21, GPIO.OUT)
+        GPIO.output(21, 1)
         time.sleep(1)
-        GPIO.output(40, 0)
+        GPIO.output(21, 0)
         time.sleep(1)
-        GPIO.output(40, 1)
+        GPIO.output(21, 1)
 
         self.front_button = ButtonWrapper(
             pin=self.front_button_gpio,
