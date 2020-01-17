@@ -91,6 +91,8 @@ class RaspberryPi(Process):
                 os.system("sudo poweroff")
             else:
                 logger.debug("Shutting down Pi process")
+                os.kill(self.front_button.pid, signal.SIGUSR1)
+                os.kill(self.back_button.pid, signal.SIGUSR1)
                 os.kill(self.pid, signal.SIGUSR1)
 
     def write_framebuffer(self, framebuffer):
