@@ -88,7 +88,7 @@ class RandomBoye(object):
         self.pi.write_framebuffers(framebuffers)
         time.sleep(2)
         self.full_cleanup()
-        self.pi.lcd.backlight_enabled = False
+        # self.pi.lcd.backlight_enabled = False
         os.kill(self.pi.pid, signal.SIGUSR1)
         # self.run = False
         # self.shutdown()

@@ -39,6 +39,7 @@ class RaspberryPi(Process):
             pin_rs=37,
             pin_e=35,
             pins_data=self.pin_modes[self.bit_mode],
+            pin_backlight=40
         )
 
         self.front_button = ButtonWrapper(
