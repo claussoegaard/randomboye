@@ -61,8 +61,8 @@ class RandomBoye(object):
                     self.terminate_print_process()
                     logger.debug("Release After Press - Random Record Flip")
                     random_record = self.dc.get_random_record()
-                    artist_title = [random_record['record']['artist'], random_record['record']['title']]
-                    record = create_framebuffers(artist_title)
+                    artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
+                    record = create_framebuffers(artist_and_title)
                     self.print_process = Process(target=self.pi.write_framebuffers, args=(record))
                     self.print_process.start()
         finally:
