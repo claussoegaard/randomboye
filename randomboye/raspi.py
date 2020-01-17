@@ -6,6 +6,7 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
+import sys
 import signal
 from multiprocessing import Process
 import time
@@ -69,6 +70,8 @@ class RaspberryPi(Process):
 
         self.default_startup_text()
 
+        self.daemon = True
+
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.lcd.home()
@@ -91,8 +94,9 @@ class RaspberryPi(Process):
                 os.system("sudo poweroff")
             else:
                 logger.debug("Shutting down Pi process")
-                self.terminate()
+                # self.terminate()
                 # os.kill(self.pid, signal.SIGUSR1)
+                sys.exit()
 
     def write_framebuffer(self, framebuffer):
         """Writes single framebuffer to LCD screen.
