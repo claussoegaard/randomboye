@@ -124,6 +124,11 @@ class RaspberryPi(Process):
         valid framebuffers.
         """
         logger.debug(FUNCTION_CALL_MSG)
+
+        # Overriding end_on_start arg if framebuffers only
+        # has one frame
+        if len(framebuffers) == 1:
+            end_on_start = False
         self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
