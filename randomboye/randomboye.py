@@ -3,8 +3,6 @@ from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
-import signal
-import os
 import time
 logger = logger(__name__)
 
@@ -22,7 +20,7 @@ class RandomBoye(object):
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
-        # self.pi.back_button.when_held = self.back_button_hold_override
+        self.pi.back_button.when_held = self.back_button_hold_override
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
@@ -83,14 +81,33 @@ class RandomBoye(object):
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
 
-    # def back_button_hold_override(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     self.terminate_current_print_process()
-    #     framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
-    #     self.pi.write_framebuffers(framebuffers)
-    #     time.sleep(2)
-    #     self.full_cleanup()
-    #     self.pi.back_button.hold_repeat = True
+    def back_button_hold_override(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        try:
+            if self.pi.back_button.latest_event:
+                if self.pi.back_button.latest_event == 'hold':
+                    logger.debug("Hold After Hold (Back) - No Action")
+                    self.pi.shutdown()
+
+                if self.pi.back_button.latest_event == 'release':
+                    logger.debug("Hold After Release (Back) - No Action")
+
+                if self.pi.back_button.latest_event == 'press':
+                    logger.debug("Hold After Press (Back) - Cleanup Processes")
+                    self.full_cleanup()
+                    framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
+                    self.pi.write_framebuffers(framebuffers)
+                    time.sleep(2)
+                    # self.pi.back_button.hold_repeat = True
+        finally:
+            self.pi.back_button.latest_event = 'hold'
+
+        # self.terminate_current_print_process()
+        # framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
+        # self.pi.write_framebuffers(framebuffers)
+        # time.sleep(2)
+        # self.full_cleanup()
+
         # self.pi.lcd.backlight_enabled = False
         # os.kill(self.pi.pid, signal.SIGUSR1)
         # self.run = False
@@ -107,13 +124,13 @@ class RandomBoye(object):
         try:
             if self.pi.front_button.latest_event:
                 if self.pi.front_button.latest_event == 'hold':
-                    logger.debug("Hold After Hold - No Action")
+                    logger.debug("Hold After Hold (Front) - No Action")
 
                 if self.pi.front_button.latest_event == 'release':
-                    logger.debug("Hold After Release - No Action")
+                    logger.debug("Hold After Release (Front) - No Action")
 
                 if self.pi.front_button.latest_event == 'press':
-                    logger.debug("Hold After Press - Cleanup Processes")
+                    logger.debug("Hold After Press (Front) - Cleanup Processes")
                     self.full_cleanup()
                     self.start_print_process(self.instructions_framebuffers())
                     self.state = 'INSTRUCTIONS'

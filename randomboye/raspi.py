@@ -78,12 +78,13 @@ class RaspberryPi(Process):
         logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held
         p = self.back_button.pressed_time
+        logger.debug(f"Held for {p} seconds")
         # blink rate will increase the longer we hold
         # the button down. E.g., at 2 seconds, use 1/4 second rate.
         self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
         if p > hold_time:
-            self.lcd.clear()
-            self.lcd.write_string('Byeeee')
+            # self.lcd.clear()
+            # self.lcd.write_string('Byeeee')
             self.led.on()
             os.system("sudo poweroff")
 
@@ -180,7 +181,7 @@ class RaspberryPi(Process):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.shutdown()
+        # self.shutdown()
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
