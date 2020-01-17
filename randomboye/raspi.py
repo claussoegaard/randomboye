@@ -125,10 +125,10 @@ class RaspberryPi(Process):
         """
         logger.debug(FUNCTION_CALL_MSG)
 
-        # Overriding end_on_start arg if framebuffers only
-        # has one frame
+        # Overriding stuff if framebuffers only has one frame
         if len(framebuffers) == 1:
             end_on_start = False
+            start_delay = 0
         self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
@@ -180,7 +180,7 @@ class RaspberryPi(Process):
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
         framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
-        self.write_framebuffers(framebuffers)
+        self.write_framebuffers(framebuffers, start_delay=0)
         time.sleep(2)
         self.lcd_cleanup()
         os.kill(self.pid, signal.SIGUSR1)
