@@ -16,7 +16,7 @@ def main():
     parser.add_argument("-t", "--test", action='store_true', dest="is_test", help="Test mode")
     parser.add_argument("-r", "--refresh-collection", action='store_true', help="Update Collection on start")
     parser.add_argument("-s", "--shutdown-system", action='store_true',
-                        dest="is_test", help="Omit to only exit script on shutdown, pass to shutdown whole system")
+                        help="Omit to only exit script on shutdown, pass to shutdown whole system")
 
     args = parser.parse_args()
     logger.debug(f"Args: (-a: {args.auth_token}, -t: {args.is_test}, -r: {args.refresh_collection}, -s: {args.shutdown_system})")
