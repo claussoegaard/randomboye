@@ -93,7 +93,7 @@ class RandomBoye(object):
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
                 if self.pi.front_button.latest_event == 'press':
-                    self.terminate_print_process()
+                    self.terminate_current_print_process()
                     if self.state in ['INSTRUCTIONS']:
                         logger.debug("Release After Press - Random Record")
                         self.start_print_process(self.random_record_framebuffers())
