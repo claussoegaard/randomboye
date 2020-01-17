@@ -85,7 +85,7 @@ class RaspberryPi(Process):
         if p > hold_time:
             # self.lcd.clear()
             # self.lcd.write_string('Byeeee')
-            self.led.on()
+            self.back_led.on()
             os.system("sudo poweroff")
 
     def write_framebuffer(self, framebuffer):
