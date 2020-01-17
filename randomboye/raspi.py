@@ -70,10 +70,12 @@ class RaspberryPi(Process):
         self.default_startup_text()
 
     def lcd_cleanup(self):
+        logger.debug(FUNCTION_CALL_MSG)
         self.lcd.home()
         self.lcd.clear()
 
     def shutdown(self, hold_time=6):
+        logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held
         p = self.back_button.pressed_time
         # blink rate will increase the longer we hold
@@ -92,6 +94,7 @@ class RaspberryPi(Process):
         ["I Am A Raspberry", "Pi                "]
         No need to clear LCD since all cells will be overwritten
         """
+        logger.debug(FUNCTION_CALL_MSG)
         if len(framebuffer) != self.lcd_rows:
             error = f"framebuffer must have exactly {self.lcd_rows} rows, has {len(framebuffer)}"
             raise ValueError(error)
@@ -120,6 +123,7 @@ class RaspberryPi(Process):
         Up to caller to implement a loop if desired, and to construct
         valid framebuffers.
         """
+        logger.debug(FUNCTION_CALL_MSG)
         self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
