@@ -69,8 +69,6 @@ class RaspberryPi(Process):
 
         self.startup_method = None
 
-    def default_splash_screen(self):
-
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.lcd.home()
