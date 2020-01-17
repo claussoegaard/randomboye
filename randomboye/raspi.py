@@ -195,7 +195,7 @@ class ButtonWrapper(Button):
     on Button
     """
 
-    def __init__(self, pin, bounce_time, hold_time):
+    def __init__(self, pin, bounce_time, hold_time, hold_repeat=False):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
-        super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time)
+        super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time, hold_repeat=hold_repeat)
         self.latest_event = None
