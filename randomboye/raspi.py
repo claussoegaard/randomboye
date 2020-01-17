@@ -69,6 +69,10 @@ class RaspberryPi(Process):
         self.lcd.home()
         self.default_startup_text()
 
+    def lcd_cleanup(self):
+        self.lcd.clear()
+        self.lcd.home()
+
     def shutdown(self, hold_time=6):
         # find how long the button has been held
         p = self.back_button.pressed_time

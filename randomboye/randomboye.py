@@ -89,7 +89,9 @@ class RandomBoye(object):
             if self.pi.front_button.latest_event:
                 if self.pi.front_button.latest_event == 'hold':
                     logger.debug("Release After Hold - Process Cleanup")
+                    self.terminate_current_print_process()
                     self.print_processes_cleanup()
+                    self.pi.lcd.lcd_cleanup
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
                 if self.pi.front_button.latest_event == 'press':
