@@ -3,6 +3,9 @@ from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
+import signal
+import os
+import time
 logger = logger(__name__)
 
 
@@ -72,12 +75,22 @@ class RandomBoye(object):
             self.print_processes[0].join()
             self.print_processes.pop(0)
 
-    def reset(self):
+    def full_cleanup(self):
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
-        self.start_print_process(self.instructions_framebuffers())
-        self.state = 'INSTRUCTIONS'
+
+    def back_button_hold_override(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        self.full_cleanup()
+        framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
+        self.pi.write_framebuffers(framebuffers)
+        time.sleep(2)
+        os.kill(self.pi.pid, signal.SIGUSR1)
+        # self.run = False
+        # self.shutdown()
+        # raise SystemExit
+        # signal.SIG_DFL
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -95,7 +108,9 @@ class RandomBoye(object):
 
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press - Cleanup Processes")
-                    self.reset()
+                    self.full_cleanup()
+                    self.start_print_process(self.instructions_framebuffers())
+                    self.state = 'INSTRUCTIONS'
         finally:
             self.pi.front_button.latest_event = 'hold'
 
