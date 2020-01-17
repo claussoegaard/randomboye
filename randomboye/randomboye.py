@@ -70,6 +70,7 @@ class RandomBoye(object):
             'Got Collection',
             f'Records: {record_count}'
         ]
+        ending_framebuffer = create_framebuffers(ending_framebuffer)
         self.terminate_current_print_process()
         self.start_print_process(ending_framebuffer)
 
