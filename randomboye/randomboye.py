@@ -5,7 +5,7 @@ from randomboye.helpers import create_framebuffers
 logger = logger(__name__)
 
 
-class Randomboye(object):
+class RandomBoye(object):
     """docstring for Randomboye"""
 
     def __init__(self, auth_token, is_test, refresh_collection):
