@@ -30,11 +30,6 @@ class RandomBoye(object):
             from randomboye.raspi import RaspberryPi
             pi = RaspberryPi()
             return pi
-            # self.pi = RaspberryPi()
-            # self.pi.start()
-            # logger.debug("After Raspberry Pi Is Init")
-            # logger.debug(f"{pi}")
-            # pi.front_button.when_pressed = front_button_when_pressed_override
         else:
             raise NotImplementedError
 
@@ -77,6 +72,13 @@ class RandomBoye(object):
             self.print_processes[0].join()
             self.print_processes.pop(0)
 
+    def reset(self):
+        self.terminate_current_print_process()
+        self.print_processes_cleanup()
+        self.pi.lcd_cleanup()
+        self.start_print_process(self.instructions_framebuffers())
+        self.state = 'INSTRUCTIONS'
+
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.pi.front_button.latest_event = 'press'
@@ -93,11 +95,7 @@ class RandomBoye(object):
 
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press - Cleanup Processes")
-                    self.terminate_current_print_process()
-                    self.print_processes_cleanup()
-                    self.pi.lcd_cleanup()
-                    self.start_print_process(self.instructions_framebuffers())
-                    self.state = 'INSTRUCTIONS'
+                    self.reset()
         finally:
             self.pi.front_button.latest_event = 'hold'
 
@@ -124,22 +122,3 @@ class RandomBoye(object):
 
         finally:
             self.pi.front_button.latest_event = 'release'
-
-
-# def start(auth_token, is_test, refresh_collection):
-#     global dc
-#     dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
-#     if not is_test:
-#         from randomboye.raspi import RaspberryPi
-#         global pi
-#         pi = RaspberryPi()
-#         pi.start()
-#         logger.debug("After Raspberry Pi Is Init")
-#         logger.debug(f"{pi}")
-#         pi.front_button.when_pressed = front_button_when_pressed_override
-#     else:
-#         pass
-
-#     pi.join()
-
-#     logger.debug("After Raspberry Pi Is Shut Down")
