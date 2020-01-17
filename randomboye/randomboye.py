@@ -96,6 +96,8 @@ class RandomBoye(object):
                     self.terminate_current_print_process()
                     self.print_processes_cleanup()
                     self.pi.lcd_cleanup()
+                    self.start_print_process(self.instructions_framebuffers())
+                    self.state = 'INSTRUCTIONS'
         finally:
             self.pi.front_button.latest_event = 'hold'
 
