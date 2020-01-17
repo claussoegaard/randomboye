@@ -70,8 +70,6 @@ class RaspberryPi(Process):
 
         self.default_startup_text()
 
-        self.daemon = True
-
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.lcd.home()
