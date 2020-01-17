@@ -91,7 +91,7 @@ class RandomBoye(object):
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
                     logger.debug("Hold After Hold (Back) - No Action")
-                    self.pi.shutdown()
+                    self.pi.shutdown(system=False)
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Hold After Release (Back) - No Action")
@@ -102,22 +102,8 @@ class RandomBoye(object):
                     framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
                     self.pi.write_framebuffers(framebuffers)
                     time.sleep(2)
-                    # self.pi.back_button.hold_repeat = True
         finally:
             self.pi.back_button.latest_event = 'hold'
-
-        # self.terminate_current_print_process()
-        # framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
-        # self.pi.write_framebuffers(framebuffers)
-        # time.sleep(2)
-        # self.full_cleanup()
-
-        # self.pi.lcd.backlight_enabled = False
-        # os.kill(self.pi.pid, signal.SIGUSR1)
-        # self.run = False
-        # self.shutdown()
-        # raise SystemExit
-        # signal.SIG_DFL
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)

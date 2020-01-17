@@ -74,7 +74,7 @@ class RaspberryPi(Process):
         self.lcd.home()
         self.lcd.clear()
 
-    def shutdown(self, hold_time=6):
+    def shutdown(self, hold_time=6, system=True):
         logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held
         p = self.back_button.pressed_time
@@ -83,10 +83,13 @@ class RaspberryPi(Process):
         # the button down. E.g., at 2 seconds, use 1/4 second rate.
         self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
         if p > hold_time:
-            # self.lcd.clear()
-            # self.lcd.write_string('Byeeee')
-            self.back_led.on()
-            os.system("sudo poweroff")
+            # Depending on system, either shutdown
+            # whole system, or just the object process
+            if system:
+                self.back_led.on()
+                os.system("sudo poweroff")
+            else:
+                os.kill(self.pid, signal.SIGUSR1)
 
     def write_framebuffer(self, framebuffer):
         """Writes single framebuffer to LCD screen.
@@ -181,7 +184,6 @@ class RaspberryPi(Process):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
-        # self.shutdown()
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
