@@ -81,19 +81,32 @@ class RandomBoye(object):
 
     def front_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.pi.front_button.latest_event = 'hold'
+        try:
+            if self.pi.front_button.latest_event:
+                if self.pi.front_button.latest_event == 'hold':
+                    logger.debug("Hold After Hold - No Action")
+
+                if self.pi.front_button.latest_event == 'release':
+                    logger.debug("Hold After Release - No Action")
+
+                if self.pi.front_button.latest_event == 'press':
+                    logger.debug("Hold After Press - Cleanup Processes")
+                    self.terminate_current_print_process()
+                    self.print_processes_cleanup()
+                    self.pi.lcd_cleanup
+        finally:
+            self.pi.front_button.latest_event = 'hold'
 
     def front_button_relase_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
             if self.pi.front_button.latest_event:
                 if self.pi.front_button.latest_event == 'hold':
-                    logger.debug("Release After Hold - Process Cleanup")
-                    self.terminate_current_print_process()
-                    self.print_processes_cleanup()
-                    self.pi.lcd.lcd_cleanup
+                    logger.debug("Release After Hold - Post Cleanup")
+
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
+
                 if self.pi.front_button.latest_event == 'press':
                     self.terminate_current_print_process()
                     if self.state in ['INSTRUCTIONS']:
