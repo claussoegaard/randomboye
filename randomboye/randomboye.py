@@ -2,6 +2,7 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from randomboye.helpers import create_framebuffers
+from multiprocessing import Process
 logger = logger(__name__)
 
 
@@ -19,6 +20,7 @@ class RandomBoye(object):
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
+        self.print_process = None
 
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
@@ -33,6 +35,11 @@ class RandomBoye(object):
             # pi.front_button.when_pressed = front_button_when_pressed_override
         else:
             raise NotImplementedError
+
+    def terminate_print_process(self):
+        if self.print_process is not None:
+            self.print_process.terminate()
+            self.print_process.join()
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -51,11 +58,13 @@ class RandomBoye(object):
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
                 if self.pi.front_button.latest_event == 'press':
+                    self.terminate_print_process()
                     logger.debug("Release After Press - Random Record Flip")
                     random_record = self.dc.get_random_record()
                     artist_title = [random_record['record']['artist'], random_record['record']['title']]
                     record = create_framebuffers(artist_title)
-                    self.pi.write_framebuffers(record)
+                    self.print_process = Process(target=self.pi.write_framebuffers, args=(record))
+                    self.print_process.start()
         finally:
             self.pi.front_button.latest_event = 'release'
 
