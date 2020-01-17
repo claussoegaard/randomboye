@@ -86,9 +86,11 @@ class RaspberryPi(Process):
             # Depending on system, either shutdown
             # whole system, or just the object process
             if system:
+                logger.debug("Shutting down system")
                 self.back_led.on()
                 os.system("sudo poweroff")
             else:
+                logger.debug("Shutting down Pi process")
                 os.kill(self.pid, signal.SIGUSR1)
 
     def write_framebuffer(self, framebuffer):
