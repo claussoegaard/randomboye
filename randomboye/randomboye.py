@@ -23,7 +23,7 @@ class RandomBoye(object):
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
-        self.pi.back_button_when_held = self.back_button_hold_override
+        self.pi.back_button.when_held = self.back_button_hold_override
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
