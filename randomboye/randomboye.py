@@ -14,9 +14,9 @@ class RandomBoye(object):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.shutdown_system = shutdown_system
-        self.dc = None
         self.auth_token = auth_token
         self.refresh_collection = refresh_collection
+        self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         self.pi = self.get_pi(is_test)
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
@@ -25,7 +25,7 @@ class RandomBoye(object):
         self.pi.front_button.when_released = self.front_button_relase_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
-        self.pi.startup_method = self.pi_startup_method_override
+        # self.pi.startup_method = self.pi_startup_method_override
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD

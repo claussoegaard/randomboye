@@ -69,6 +69,8 @@ class RaspberryPi(Process):
 
         self.startup_method = None
 
+    def default_splash_screen(self):
+
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.lcd.home()
@@ -148,7 +150,7 @@ class RaspberryPi(Process):
         if end_on_start:
             self.write_framebuffer(framebuffers[0])
 
-    def default_startup_text(self):
+    def default_splash_screen(self):
         smiley = (
             0b00000,
             0b01010,
@@ -161,17 +163,34 @@ class RaspberryPi(Process):
         )
         self.lcd.create_char(0, smiley)
         s = chr(0)
+        lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
+        framebuffers = create_framebuffers(lines)
+        self.write_framebuffers(framebuffers)
+
+    def default_startup_text(self):
+        # smiley = (
+        #     0b00000,
+        #     0b01010,
+        #     0b01010,
+        #     0b00000,
+        #     0b10001,
+        #     0b10001,
+        #     0b01110,
+        #     0b00000,
+        # )
+        # self.lcd.create_char(0, smiley)
+        # s = chr(0)
         startup_steps_lines = [
             ['Loading', '.'],
             ['Loading', '..'],
-            ['Loading', '...'],
-            [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
+            ['Loading', '...']
+            # [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         for lines in startup_steps_lines:
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
             self.write_framebuffers(framebuffers)
-            time.sleep(0.5)
+            # time.sleep(0.5)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
