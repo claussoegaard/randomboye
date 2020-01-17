@@ -12,15 +12,18 @@ class RandomBoye(object):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
-        self.pi = self.set_pi(is_test)
+        self.pi = self.get_pi(is_test)
+        self.pi.start()
         self.pi.front_button.when_pressed = self.front_button_press_override
 
-    def set_pi(self, is_test):
+    def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
             from randomboye.raspi import RaspberryPi
-            self.pi = RaspberryPi()
-            self.pi.start()
+            pi = RaspberryPi()
+            return pi
+            # self.pi = RaspberryPi()
+            # self.pi.start()
             # logger.debug("After Raspberry Pi Is Init")
             # logger.debug(f"{pi}")
             # pi.front_button.when_pressed = front_button_when_pressed_override
