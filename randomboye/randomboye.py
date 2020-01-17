@@ -38,11 +38,13 @@ class RandomBoye(object):
             raise NotImplementedError
 
     def random_record_framebuffers(self):
+        logger.debug(FUNCTION_CALL_MSG)
         random_record = self.dc.get_random_record()
         artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
         return create_framebuffers(artist_and_title)
 
     def instructions_framebuffers(self):
+        logger.debug(FUNCTION_CALL_MSG)
         instructions = [
             'Press For Random',
             'Record  d[-_-]b'
@@ -50,6 +52,7 @@ class RandomBoye(object):
         return create_framebuffers(instructions)
 
     def start_print_process(self, framebuffers):
+        logger.debug(FUNCTION_CALL_MSG)
         self.print_process = Process(
             target=self.pi.write_framebuffers,
             kwargs={'framebuffers': framebuffers}
@@ -57,6 +60,7 @@ class RandomBoye(object):
         self.print_process.start()
 
     def terminate_print_process(self):
+        logger.debug(FUNCTION_CALL_MSG)
         if self.print_process is not None:
             self.print_process.terminate()
             self.print_process.join()

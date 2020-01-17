@@ -1,3 +1,6 @@
+from definitions import FUNCTION_CALL_MSG
+from logs.config import logger
+logger = logger(__name__)
 
 
 def pad(line, n=16, start=0):
@@ -27,6 +30,7 @@ def create_padded_lines(line, n=16):
 
 
 def create_framebuffers(lines, n=16):
+    logger.debug(FUNCTION_CALL_MSG)
     framebuffer_pivoted = []
     steps_of_longest_string = max([max(len(line) - n, 0) + 1 for line in lines])
 
@@ -47,5 +51,5 @@ def create_framebuffers(lines, n=16):
         for j in range(len(lines)):
             step_list.append(framebuffer_pivoted[j][i])
         framebuffers.append(step_list)
-
+    logger.debug(f"Returning: {framebuffers}")
     return framebuffers
