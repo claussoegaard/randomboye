@@ -56,7 +56,7 @@ class RaspberryPi(Process):
             pin=self.back_button_gpio,
             bounce_time=0.01,
             hold_time=1,
-            # hold_repeat=True
+            hold_repeat=True
         )
 
         self.back_button.when_pressed = self.back_button__when_pressed
@@ -180,6 +180,7 @@ class RaspberryPi(Process):
 
     def back_button__when_held(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.shutdown()
 
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
