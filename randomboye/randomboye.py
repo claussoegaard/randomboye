@@ -3,6 +3,7 @@ from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
+import time
 logger = logger(__name__)
 
 
@@ -13,7 +14,9 @@ class RandomBoye(object):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.shutdown_system = shutdown_system
-        self.dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
+        self.dc = None
+        self.auth_token = auth_token
+        self.refresh_collection = refresh_collection
         self.pi = self.get_pi(is_test)
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
@@ -22,6 +25,7 @@ class RandomBoye(object):
         self.pi.front_button.when_released = self.front_button_relase_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
+        self.pi.startup_method = self.pi_startup_method_override
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
@@ -37,6 +41,37 @@ class RandomBoye(object):
             return pi
         else:
             raise NotImplementedError
+
+    def pi_startup_method_override(self):
+        self.pi.default_startup_text()
+        self.get_discogs_collection()
+        time.sleep(1)
+        self.full_cleanup()
+
+    def get_discogs_collection(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        self.terminate_current_print_process()
+        if self.refresh_collection:
+            starting_framebuffer = [
+                'Getting Records',
+                'From Discogs...'
+            ]
+            starting_framebuffer = create_framebuffers(starting_framebuffer)
+        else:
+            starting_framebuffer = [
+                'Getting Records',
+                'From File...'
+            ]
+        starting_framebuffer = create_framebuffers(starting_framebuffer)
+        self.start_print_process(starting_framebuffer)
+        self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
+        record_count = self.dc.collection['record_count']
+        ending_framebuffer = [
+            'Got Collection',
+            f'Records: {record_count}'
+        ]
+        self.terminate_current_print_process()
+        self.start_print_process(ending_framebuffer)
 
     def random_record_framebuffers(self):
         logger.debug(FUNCTION_CALL_MSG)
