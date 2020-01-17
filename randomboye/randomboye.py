@@ -15,8 +15,10 @@ class RandomBoye(object):
         self.pi = self.get_pi(is_test)
         self.pi.start()
         self.pi.front_button.latest_event = None
-        self.pi.back_buton.latest_event = None
+        self.pi.back_button.latest_event = None
         self.pi.front_button.when_pressed = self.front_button_press_override
+        self.pi.front_button.when_held = self.front_button_hold_override
+        self.pi.front_button.when_released = self.front_button_relase_override
 
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
