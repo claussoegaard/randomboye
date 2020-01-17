@@ -82,9 +82,11 @@ class RandomBoye(object):
                     if self.state in ['INSTRUCTIONS']:
                         logger.debug("Release After Press - Random Record")
                         self.start_print_process(self.random_record_framebuffers())
+                        self.state = 'RECORD'
                     elif self.state in ['STARTUP', 'RECORD']:
                         logger.debug("Release After Press - Print Instructions")
                         self.start_print_process(self.instructions_framebuffers())
+                        self.state = 'INSTRUCTIONS'
 
         finally:
             self.pi.front_button.latest_event = 'release'
