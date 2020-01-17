@@ -163,7 +163,8 @@ class RaspberryPi(Process):
         for lines in startup_steps_lines:
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
-            self.write_framebuffers(framebuffers, start_delay=0.5, end_on_start=False)
+            self.write_framebuffers(framebuffers)
+            time.sleep(0.5)
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
