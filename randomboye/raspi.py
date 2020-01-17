@@ -96,7 +96,6 @@ class RaspberryPi(Process):
             error = f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long"
             raise ValueError(error)
         self.lcd.home()
-        self.lcd.clear()
         for row in framebuffer:
             try:
                 self.lcd.write_string(row)
@@ -117,6 +116,7 @@ class RaspberryPi(Process):
         Up to caller to implement a loop if desired, and to construct
         valid framebuffers.
         """
+        self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
             if i == 0:
