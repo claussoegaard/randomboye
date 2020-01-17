@@ -1,5 +1,5 @@
 from logs.config import logger
-from randomboye import randomboye
+from randomboye.randomboye import RandomBoye
 import os
 
 # from randomboye.raspi import RaspberryPi
@@ -32,7 +32,9 @@ def main():
             logger.debug("Exiting script")
             raise SystemExit
 
-    randomboye.start(args.auth_token, args.is_test, args.refresh_collection)
+    randomboye = RandomBoye(args.auth_token, args.is_test, args.refresh_collection)
+
+    # randomboye.start(args.auth_token, args.is_test, args.refresh_collection)
 
 
 if __name__ == '__main__':
