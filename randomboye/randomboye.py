@@ -12,7 +12,7 @@ class RandomBoye(object):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
-        self.pi = self.set_pi()
+        self.pi = self.set_pi(is_test)
         self.pi.front_button.when_pressed = self.front_button_press_override
 
     def set_pi(self, is_test):
