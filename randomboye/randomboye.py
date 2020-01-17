@@ -20,7 +20,8 @@ class RandomBoye(object):
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
-        self.print_process = None
+        self.print_processes = []
+        self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
 
     def get_pi(self, is_test):
@@ -53,17 +54,26 @@ class RandomBoye(object):
 
     def start_print_process(self, framebuffers):
         logger.debug(FUNCTION_CALL_MSG)
-        self.print_process = Process(
+        self.current_print_process = Process(
             target=self.pi.write_framebuffers,
             kwargs={'framebuffers': framebuffers}
         )
-        self.print_process.start()
+        self.current_print_process.start()
+        self.print_processes.append(self.current_print_process)
 
-    def terminate_print_process(self):
+    def terminate_current_print_process(self):
         logger.debug(FUNCTION_CALL_MSG)
-        if self.print_process is not None:
-            self.print_process.terminate()
-            self.print_process.join()
+        if self.current_print_process is not None:
+            self.current_print_process.terminate()
+            self.current_print_process.join()
+
+    def print_processes_cleanup(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        logger.debug(f"{len(self.print_processes)} threads to clean up")
+        while len(self.print_processes) > 0:
+            self.print_processes[0].terminate()
+            self.print_processes[0].join()
+            self.print_processes.pop(0)
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -78,7 +88,8 @@ class RandomBoye(object):
         try:
             if self.pi.front_button.latest_event:
                 if self.pi.front_button.latest_event == 'hold':
-                    logger.debug("Release After Hold - No Action")
+                    logger.debug("Release After Hold - Process Cleanup")
+                    self.print_processes_cleanup()
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
                 if self.pi.front_button.latest_event == 'press':
