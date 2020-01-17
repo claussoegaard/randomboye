@@ -92,9 +92,8 @@ class RaspberryPi(Process):
                 os.system("sudo poweroff")
             else:
                 logger.debug("Shutting down Pi process")
-                # self.terminate()
-                # os.kill(self.pid, signal.SIGUSR1)
-                sys.exit()
+                # This throws some gpiozero related error on exit, but oh well
+                os.kill(self.pid, signal.SIGUSR1)
 
     def write_framebuffer(self, framebuffer):
         """Writes single framebuffer to LCD screen.
