@@ -90,7 +90,7 @@ class RandomBoye(object):
         try:
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
-                    logger.debug("Hold After Hold (Back) - No Action")
+                    logger.debug("Hold After Hold (Back) - Shutdown")
                     self.pi.shutdown(system=False)
 
                 if self.pi.back_button.latest_event == 'release':
@@ -101,7 +101,7 @@ class RandomBoye(object):
                     self.full_cleanup()
                     framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
                     self.pi.write_framebuffers(framebuffers)
-                    time.sleep(2)
+                    # time.sleep(2)
         finally:
             self.pi.back_button.latest_event = 'hold'
 
