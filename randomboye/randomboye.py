@@ -95,7 +95,7 @@ class RandomBoye(object):
                     logger.debug("Hold After Press - Cleanup Processes")
                     self.terminate_current_print_process()
                     self.print_processes_cleanup()
-                    self.pi.lcd_cleanup
+                    self.pi.lcd_cleanup()
         finally:
             self.pi.front_button.latest_event = 'hold'
 
