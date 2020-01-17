@@ -83,10 +83,11 @@ class RandomBoye(object):
 
     def back_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.full_cleanup()
+        self.terminate_current_print_process()
         framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
         self.pi.write_framebuffers(framebuffers)
         time.sleep(2)
+        self.full_cleanup()
         os.kill(self.pi.pid, signal.SIGUSR1)
         # self.run = False
         # self.shutdown()
