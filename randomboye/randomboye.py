@@ -81,6 +81,10 @@ class RandomBoye(object):
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
 
+    def back_button_press_override(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        self.pi.back_button.latest_event = 'press'
+
     def back_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
