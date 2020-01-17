@@ -3,16 +3,16 @@ from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
-import time
 logger = logger(__name__)
 
 
 class RandomBoye(object):
     """docstring for Randomboye"""
 
-    def __init__(self, auth_token, is_test, refresh_collection):
+    def __init__(self, auth_token, is_test, refresh_collection, shutdown_system):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
+        self.shutdown_system = shutdown_system
         self.dc = DiscogsCollection(auth_token=auth_token, refresh_collection=refresh_collection)
         self.pi = self.get_pi(is_test)
         self.pi.front_button.latest_event = None
@@ -32,7 +32,7 @@ class RandomBoye(object):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
             from randomboye.raspi import RaspberryPi
-            pi = RaspberryPi()
+            pi = RaspberryPi(shutdown_system=self.shutdown_system)
             return pi
         else:
             raise NotImplementedError
@@ -91,7 +91,7 @@ class RandomBoye(object):
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
                     logger.debug("Hold After Hold (Back) - Shutdown")
-                    self.pi.shutdown(system=False)
+                    self.pi.shutdown()
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Hold After Release (Back) - No Action")

@@ -6,7 +6,6 @@ from RPLCD.gpio import CharLCD
 from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
-import sys
 import signal
 from multiprocessing import Process
 import time
@@ -17,10 +16,11 @@ logger = logger(__name__)
 
 
 class RaspberryPi(Process):
-    def __init__(self):
+    def __init__(self, shutdown_system=False):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
+        self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
         self.back_button_gpio = 3
         self.back_led_gpio = 14  # power LED
@@ -75,7 +75,7 @@ class RaspberryPi(Process):
         self.lcd.home()
         self.lcd.clear()
 
-    def shutdown(self, hold_time=6, system=True):
+    def shutdown(self, hold_time=6):
         logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held
         p = self.back_button.pressed_time
@@ -86,7 +86,7 @@ class RaspberryPi(Process):
         if p > hold_time:
             # Depending on system, either shutdown
             # whole system, or just the object process
-            if system:
+            if self.shutdown_system:
                 logger.debug("Shutting down system")
                 self.back_led.on()
                 os.system("sudo poweroff")
