@@ -63,7 +63,7 @@ class RandomBoye(object):
                     random_record = self.dc.get_random_record()
                     artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
                     record = create_framebuffers(artist_and_title)
-                    self.print_process = Process(target=self.pi.write_framebuffers, args=(record))
+                    self.print_process = Process(target=self.pi.write_framebuffers, kwargs={'framebuffers': record})
                     self.print_process.start()
         finally:
             self.pi.front_button.latest_event = 'release'
