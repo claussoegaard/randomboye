@@ -168,7 +168,8 @@ class RandomBoye(object):
                     logger.debug(f"Release After Hold (Back, {latest_hold_time} seconds) - No Action")
                     if self.pi.back_button.was_latest_hold_long():
                         self.cleanup()
-                        self.start_print_process(["Byeeeee..."])
+                        self.start_print_process(["Byeeeee...", ""])
+                        self.current_print_process.join()
                         self.pi.shutdown2()
 
                 if self.pi.back_button.latest_event == 'release':
