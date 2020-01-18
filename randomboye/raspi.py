@@ -78,7 +78,7 @@ class RaspberryPi(Process):
         self.lcd_printer = self.LCDFramebufferPrinter(self)
 
     def print_framebuffers(self, framebuffers,
-                           start_delay=3, end_delay=2, scroll_delay=0.4,
+                           start_delay=3000, end_delay=2000, scroll_delay=400,
                            end_on_start=True):
         """docstring"""
         logger.debug(FUNCTION_CALL_MSG)
@@ -340,6 +340,7 @@ class RaspberryPi(Process):
                 logger.debug(e)
                 return
             framebuffer, delay = print_job
+
             # If all framebuffers are blank
             if framebuffer == [" " * self.pi.lcd_cols] * self.pi.lcd_rows:
                 self.lcd_cleanup()
@@ -348,8 +349,9 @@ class RaspberryPi(Process):
             # Always sleeping for at least 0.2
             # to make sure data is done transmitting
             # to the LCD before next write.
-            delay = max(delay, 0.2)
-            time.sleep(delay)
+            delay = max(delay, 200)
+            delay_sec = delay / 1000
+            time.sleep(delay_sec)
 
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
