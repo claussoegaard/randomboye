@@ -46,7 +46,7 @@ class RaspberryPi(Process):
             pins_data=self.pin_modes[self.bit_mode],
         )
 
-        self.front_button = Button(
+        self.front_button = ButtonWrapper(
             pin=self.front_button_gpio,
             bounce_time=0.01,
             hold_time=1,
@@ -57,7 +57,7 @@ class RaspberryPi(Process):
         self.front_button.when_held = self.front_button__when_held
         self.front_button.when_released = self.front_button__when_released
 
-        self.back_button = Button(
+        self.back_button = ButtonWrapper(
             pin=self.back_button_gpio,
             bounce_time=0.01,
             hold_time=1,

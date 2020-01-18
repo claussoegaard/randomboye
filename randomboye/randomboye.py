@@ -30,10 +30,8 @@ class RandomBoye(object):
 
     def start(self):
         self.pi = self.get_pi(self.is_test)
-        # self.pi.front_button.latest_event = None
-        # self.pi.back_button.latest_event = None
-        self.pi.front_button_latest_event = None
-        self.pi.back_button_latest_event = None
+        self.pi.front_button.latest_event = None
+        self.pi.back_button.latest_event = None
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_relase_override
@@ -126,59 +124,59 @@ class RandomBoye(object):
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.pi.back_button_latest_event = 'press'
+        self.pi.back_button.latest_event = 'press'
 
     def back_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
-            if self.pi.back_button_latest_event:
-                if self.pi.back_button_latest_event == 'hold':
+            if self.pi.back_button.latest_event:
+                if self.pi.back_button.latest_event == 'hold':
                     logger.debug("Hold After Hold (Back) - Shutdown")
                     self.pi.shutdown()
 
-                if self.pi.back_button_latest_event == 'release':
+                if self.pi.back_button.latest_event == 'release':
                     logger.debug("Hold After Release (Back) - No Action")
 
-                if self.pi.back_button_latest_event == 'press':
+                if self.pi.back_button.latest_event == 'press':
                     logger.debug("Hold After Press (Back) - Cleanup Processes")
                     self.full_cleanup()
                     self.pi.stream_lines(['Shutting Down', 'Byeee!'])
         finally:
-            self.pi.back_button_latest_event = 'hold'
+            self.pi.back_button.latest_event = 'hold'
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.pi.front_button_latest_event = 'press'
+        self.pi.front_button.latest_event = 'press'
 
     def front_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
-            if self.pi.front_button_latest_event:
-                if self.pi.front_button_latest_event == 'hold':
+            if self.pi.front_button.latest_event:
+                if self.pi.front_button.latest_event == 'hold':
                     logger.debug("Hold After Hold (Front) - No Action")
 
-                if self.pi.front_button_latest_event == 'release':
+                if self.pi.front_button.latest_event == 'release':
                     logger.debug("Hold After Release (Front) - No Action")
 
-                if self.pi.front_button_latest_event == 'press':
+                if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press (Front) - Cleanup Processes")
                     self.full_cleanup()
                     self.start_print_process(self.instructions_lines())
                     self.state = 'INSTRUCTIONS'
         finally:
-            self.pi.front_button_latest_event = 'hold'
+            self.pi.front_button.latest_event = 'hold'
 
     def front_button_relase_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
-            if self.pi.front_button_latest_event:
-                if self.pi.front_button_latest_event == 'hold':
+            if self.pi.front_button.latest_event:
+                if self.pi.front_button.latest_event == 'hold':
                     logger.debug("Release After Hold - Post Cleanup")
 
-                if self.pi.front_button_latest_event == 'release':
+                if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
 
-                if self.pi.front_button_latest_event == 'press':
+                if self.pi.front_button.latest_event == 'press':
                     self.terminate_current_print_process()
                     if self.state in ['INSTRUCTIONS']:
                         logger.debug("Release After Press - Random Record")
@@ -190,4 +188,4 @@ class RandomBoye(object):
                         self.state = 'INSTRUCTIONS'
 
         finally:
-            self.pi.front_button_latest_event = 'release'
+            self.pi.front_button.latest_event = 'release'
