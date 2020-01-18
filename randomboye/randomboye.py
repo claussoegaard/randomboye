@@ -32,12 +32,14 @@ class RandomBoye(object):
         self.pi = self.get_pi(self.is_test)
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
+        logger.debug("Setting button overrides")
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
         self.pi.front_button.when_released = self.front_button_release_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
         self.pi.back_button.when_released = self.back_button_release_override
+        logger.debug("Starting Pi")
         self.pi.start()
 
     def get_pi(self, is_test):
