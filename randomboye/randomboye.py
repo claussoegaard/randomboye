@@ -129,12 +129,14 @@ class RandomBoye(object):
 
     def back_button_hold_override(self):
         logger.debug(FUNCTION_CALL_MSG)
+        pressed_time = 0
         try:
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
-                    logger.debug("Hold After Hold (Back) - Shutdown")
-                    if self.pi.back_button.is_long_hold_time():
-                        self.pi.back_button.latest_event = 'long_hold'
+                    pressed_time = self.pi.back_button.pressed_time
+                    logger.debug(f"Hold After Hold (Back, {pressed_time} seconds) - No Action")
+                    # if self.pi.back_button.is_long_hold_time():
+                        # self.pi.back_button.latest_event = 'long_hold'
                         # self.pi.shutdown()
 
                 if self.pi.back_button.latest_event == 'release':
