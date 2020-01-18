@@ -286,3 +286,6 @@ class ButtonWrapper(Button):
 
     def is_long_hold_time(self):
         return self.pressed_time > self.long_hold_time
+
+    def was_latest_hold_long(self):
+        return self.latest_hold_time > self.long_hold_time
