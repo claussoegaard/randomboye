@@ -100,9 +100,10 @@ class RandomBoye(Process):
         ]
 
     def cancel_any_print_processes(self):
-        stop_printing = Thread(target=self.pi.stop_printing)
-        stop_printing.start()
-        stop_printing.join()
+        # stop_printing = Thread(target=self.pi.stop_printing)
+        # stop_printing.start()
+        # stop_printing.join()
+        self.pi.stop_printing()
 
     def start_print_process(self, lines):
         logger.debug(FUNCTION_CALL_MSG)
