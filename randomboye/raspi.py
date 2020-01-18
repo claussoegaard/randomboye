@@ -78,59 +78,56 @@ class RaspberryPi(Process):
         self.lcd_printer = self.LCDFramebufferPrinter(self)
 
     def print_framebuffers(self, framebuffers,
-                           start_delay=3000, end_delay=2000, scroll_delay=400,
-                           end_on_start=True):
-        """docstring"""
+                           scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
+                           end_on_start=True, end_delay=0):
+        """Takes N framebuffers and creates N or N+1 (depending on end_on_start)
+        print jobs in the print_jobs queue
+        """
         logger.debug(FUNCTION_CALL_MSG)
         if len(framebuffers) == 1:
             end_on_start = False
-            start_delay = 0
+            scroll_start_delay = 0
         for i, framebuffer in enumerate(framebuffers):
             print_job_delay = 0
             if i == 0:
-                print_job_delay = start_delay
-
+                print_job_delay = scroll_start_delay
             elif i == len(framebuffers) - 1:
-                print_job_delay = end_delay
+                print_job_delay = scroll_end_delay
             else:
-                print_job_delay = scroll_delay
+                print_job_delay = scroll_step_delay
             self.create_framebuffer_print_job(framebuffer, print_job_delay)
         if end_on_start:
-            self.create_framebuffer_print_job(framebuffers[0])
+            self.create_framebuffer_print_job(framebuffers[0], end_delay)
 
-    # def lcd_cleanup(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     self.lcd.home()
-    #     self.lcd.clear()
-
-    # def write_framebuffers(self, framebuffers,
-    #                        start_delay=3, end_delay=2, scroll_delay=0.4,
-    #                        end_on_start=True):
-    #     """Writes N framebuffers to LCD screen.
-    #     If len(framebuffers) > 1 it will first delay scrolling by start_delay,
-    #     then it will progress through framebuffers at scroll_delay speed,
-    #     until it reaches the end, where it will pause for end_delay time.
-    #     See write_framebuffer() for details on valid framebuffers.
-    #     Up to caller to implement a loop if desired, and to construct
-    #     valid framebuffers.
-    #     """
-    #     logger.debug(FUNCTION_CALL_MSG)
-
-    #     # Overriding stuff if framebuffers only has one frame
-    #     if len(framebuffers) == 1:
-    #         end_on_start = False
-    #         start_delay = 0
-    #     self.pi.lcd.clear()  # Clearing once in beginning of framebuffer
-    #     for i, framebuffer in enumerate(framebuffers):
-    #         self.write_framebuffer(framebuffer)
-    #         if i == 0:
-    #             time.sleep(start_delay)
-    #         elif i == len(framebuffers) - 1:
-    #             time.sleep(end_delay)
-    #         else:
-    #             time.sleep(scroll_delay)
-    #     if end_on_start:
-    #         self.write_framebuffer(framebuffers[0])
+    def print_multiples_of_lines(self, lines_list,
+                                 scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
+                                 end_on_start=True, end_delay=500):
+        """
+        lines = [line1, ..., lineN]
+        ergo:
+        lines_list = [[line1, ..., lineN], ..., [line1, ..., lineN]]
+        For **each set** of lines in lines_list, will do the following:
+        1. Create framebuffers for printing/streaming
+        2. Print the first framebuffer then wait scroll_start_delay seconds
+        3. Print the remaining framebuffers with a scroll_step_delay gap
+        4. Wait scroll_end_delay after the last framebuffer
+        5. If end_on_start==True it will then print the first framebuffer again
+        Then after end_delay it will do the same for the next line in
+        lines_list
+        """
+        logger.debug(FUNCTION_CALL_MSG)
+        if len(lines_list) == 1:
+            end_delay = 0
+        multiple_framebuffers = create_multiple_framebuffers(lines_list)
+        for framebuffers in multiple_framebuffers:
+            self.print_framebuffers(
+                framebuffers=framebuffers,
+                scroll_start_delay=scroll_start_delay,
+                scroll_end_delay=scroll_end_delay,
+                scroll_step_delay=scroll_step_delay,
+                end_on_start=end_on_start,
+                end_delay=end_delay
+            )
 
     # def stream_multiples_of_lines(self, lines_list,
     #                               start_delay=3, end_delay=2, scroll_delay=0.4,
