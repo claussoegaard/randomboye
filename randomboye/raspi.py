@@ -8,6 +8,7 @@ from definitions import FUNCTION_CALL_MSG
 import os
 import signal
 from multiprocessing import Process, Queue
+from threading import Thread
 import time
 from randomboye.helpers import (
     # create_framebuffers,
@@ -263,10 +264,10 @@ class RaspberryPi(Process):
     def run(self):
         # self.lcd_cleanup()
         # self.startup_method()
-        # self.lcd_printer.start()
+        self.lcd_printer.start()
         signal.pause()
 
-    class LCDFramebufferPrinter(Process):
+    class LCDFramebufferPrinter(Thread):
         def __init__(self, pi):
             super().__init__()
             logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
