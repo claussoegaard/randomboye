@@ -7,14 +7,14 @@ pi.start()
 time.sleep(2)
 
 for i in range(10):
-    print_job = ([f"Pavement       {i}", "Slanted And Ench"])
-    pi.add_to_print_jobs_queue(print_job)
+    fb = [f"Pavement       {i}", "Slanted And Ench"]
+    pi.create_framebuffer_print_job(fb)
 
 time.sleep(2)
 
 for i in range(10):
-    print_job = (["Pavement       {i}", "Slanted And Ench"])
-    pi.add_to_print_jobs_queue(print_job)
+    fb = ["Pavement       {i}", "Slanted And Ench"]
+    pi.create_framebuffer_print_job(fb)
 
 time.sleep(2)
 framebuffers = [
