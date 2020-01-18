@@ -286,7 +286,7 @@ class RaspberryPi(Process):
                 raise ValueError(f"1st element must be list with {self.pi.lcd_rows} elements ({print_job})")
             if any([len(s) != self.pi.lcd_cols for s in print_job[0]]):
                 raise ValueError(f"1st element must be list with only {self.pi.lcd_cols} long elements ({print_job})")
-            print("Valid Tuple")
+            logger.debug(f"{print_job} is valid print_job")
 
         def lcd_cleanup(self):
             logger.debug(FUNCTION_CALL_MSG)
