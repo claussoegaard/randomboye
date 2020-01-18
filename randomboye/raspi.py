@@ -77,6 +77,29 @@ class RaspberryPi(Process):
         self.print_jobs = Queue()
         self.lcd_printer = self.LCDFramebufferPrinter(self)
 
+    def print_framebuffers(self, framebuffers,
+                           start_delay=3, end_delay=2, scroll_delay=0.4,
+                           end_on_start=True):
+        """docstring"""
+        logger.debug(FUNCTION_CALL_MSG)
+        if len(framebuffers) == 1:
+            end_on_start = False
+            start_delay = 0
+        for i, framebuffer in enumerate(framebuffers):
+            print_job_delay = 0
+            if i == 0:
+                print_job_delay = start_delay
+
+            elif i == len(framebuffers) - 1:
+                print_job_delay = end_delay
+            else:
+                print_job_delay = scroll_delay
+            print_job = (framebuffer, print_job_delay)
+            self.add_to_print_jobs_queue(print_job)
+        if end_on_start:
+            print_job = (framebuffer, 0)
+            self.add_to_print_jobs_queue(print_job)
+
     # def lcd_cleanup(self):
     #     logger.debug(FUNCTION_CALL_MSG)
     #     self.lcd.home()
