@@ -23,6 +23,7 @@ class RaspberryPi(Process):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
+        self.daemon = False
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
