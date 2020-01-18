@@ -244,15 +244,15 @@ class RandomBoye(Process):
                     logger.debug("Release After Release - No Action")
 
                 if self.pi.front_button.latest_event == 'press':
-                    logger.debug("Release After Press - Random Record")
+                    logger.debug("Release After Press")
                     self.cancel_any_print_processes()
                     # self.terminate_current_print_process()
                     if self.state in ['INSTRUCTIONS']:
-                        logger.debug("Release After Press - Random Record")
+                        logger.debug("Random Record")
                         self.start_print_process(self.random_record_lines())
                         self.state = 'RECORD'
                     elif self.state in ['STARTUP', 'RECORD']:
-                        logger.debug("Release After Press - Print Instructions")
+                        logger.debug("Print Instructions")
                         self.start_print_process(self.instructions_lines())
                         self.state = 'INSTRUCTIONS'
 

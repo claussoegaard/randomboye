@@ -253,6 +253,7 @@ class RaspberryPi(Process):
         So starting this as a thread and join() to main thread
         should make this blocking
         """
+        logger.debug(FUNCTION_CALL_MSG)
         self.print_ok.clear()
         self.print_framebuffers_done.wait()
         self.print_jobs_done.wait()
