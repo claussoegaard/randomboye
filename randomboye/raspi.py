@@ -27,7 +27,9 @@ class RaspberryPi(Process):
         # self.daemon = False
 
         self.print_framebuffers_done = Event()
+        self.print_framebuffers_done.set()
         self.print_jobs_done = Event()
+        self.print_jobs_done.set()
         self.print_ok = Event()
         self.print_ok.set()
 
