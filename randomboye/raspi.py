@@ -129,35 +129,23 @@ class RaspberryPi(Process):
                 end_delay=end_delay
             )
 
-    # def stream_multiples_of_lines(self, lines_list,
-    #                               start_delay=3, end_delay=2, scroll_delay=0.4,
-    #                               lines_delay=0.5, end_on_start=True):
-    #     """
-    #     lines = [line1, ..., lineN]
-    #     ergo:
-    #     lines_list = [[line1, ..., lineN], ..., [line1, ..., lineN]]
-    #     For each set of lines in lines_list, will do the following:
-    #     1. Create framebuffers for streaming
-    #     2. Write the first framebuffer then wait start_delay seconds
-    #     3. Write the remaining framebuffers with a scroll_delay gap
-    #     4. Wait end_delay at the last framebuffer
-    #     5. If end_on_start==True it will then write the first framebuffer again
-    #     Then after lines_delay it will do the same for the next line in
-    #     lines_list
-    #     """
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     if len(lines_list) == 1:
-    #         lines_delay = 0
-    #     multiple_framebuffers = create_multiple_framebuffers(lines_list)
-    #     for framebuffers in multiple_framebuffers:
-    #         self.write_framebuffers(
-    #             framebuffers=framebuffers,
-    #             start_delay=start_delay,
-    #             end_delay=end_delay,
-    #             scroll_delay=scroll_delay,
-    #             end_on_start=end_on_start
-    #         )
-    #         time.sleep(lines_delay)
+    def print_lines(self, lines,
+                    scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
+                    end_on_start=True, end_delay=0):
+        """
+        Its not very intuitive to pass [[line1, ..., lineN]] to print_multiples_of_lines
+        when you just want to write a single line, so this just wraps
+        [line1, ..., lineN] in a list and passes to print_multiples_of_lines
+        """
+        lines_list = [lines]
+        self.print_multiples_of_lines(
+            lines_list=lines_list,
+            scroll_start_delay=scroll_start_delay,
+            scroll_end_delay=scroll_end_delay,
+            scroll_step_delay=scroll_step_delay,
+            end_delay=end_delay,
+            end_on_start=end_on_start
+        )
 
     # def stream_lines(self, lines,
     #                  start_delay=3, end_delay=2, scroll_delay=0.4,
@@ -292,7 +280,6 @@ class RaspberryPi(Process):
             super().__init__()
             logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
             self.pi = pi
-            # self.daemon = False
 
         def validate_print_job(self, print_job):
             logger.debug(FUNCTION_CALL_MSG)

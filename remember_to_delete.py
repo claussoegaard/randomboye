@@ -21,3 +21,7 @@ pi.print_framebuffers(framebuffers)
 lines_list = [["Pavement", "Crooked Rain, Crooked Rain"], ["Figurines", "Skeleton"]]
 
 pi.print_multiples_of_lines(lines_list)
+
+lines = ["Mission of Burma", "Signals, Calls, and Marches"]
+
+pi.print_lines(lines)
