@@ -77,6 +77,17 @@ class RaspberryPi(Process):
         self.lcd.home()
         self.lcd.clear()
 
+    def shutdown2(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        if self.shutdown_system:
+            logger.debug("Shutting down system")
+            self.back_led.on()
+            os.system("sudo poweroff")
+        else:
+            logger.debug("Shutting down Pi process")
+            # This throws some gpiozero related error on exit, but oh well
+            os.kill(self.pid, signal.SIGUSR1)
+
     def shutdown(self, hold_time=6):
         logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held

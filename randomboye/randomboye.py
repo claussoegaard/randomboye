@@ -167,7 +167,7 @@ class RandomBoye(object):
                     latest_hold_time = self.pi.back_button.latest_hold_time
                     logger.debug(f"Release After Hold (Back, {latest_hold_time} seconds) - No Action")
                     if self.pi.back_button.was_latest_hold_long():
-                        self.pi.shutdown()
+                        self.pi.shutdown2()
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Release After Release (Back) - No Action")
