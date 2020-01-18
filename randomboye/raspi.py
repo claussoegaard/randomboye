@@ -23,7 +23,7 @@ class RaspberryPi(Process):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
-        self.daemon = False
+        # self.daemon = False
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
@@ -271,7 +271,7 @@ class RaspberryPi(Process):
             super().__init__()
             logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
             self.pi = pi
-            self.daemon = False
+            # self.daemon = False
 
         def validate_print_job(self, print_job):
             logger.debug(FUNCTION_CALL_MSG)
