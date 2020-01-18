@@ -2,6 +2,7 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from multiprocessing import Process
+from threading import Thread
 import signal
 import time
 import os
@@ -98,99 +99,105 @@ class RandomBoye(Process):
             'Record  d[-_-]b'
         ]
 
-    # def start_print_process(self, lines):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     self.current_print_process = Process(
-    #         target=self.pi.stream_lines,
-    #         kwargs={'lines': lines}
-    #     )
-    #     self.current_print_process.start()
-    #     self.print_processes.append(self.current_print_process)
+    def cancel_any_print_processes(self):
+        stop_printing = Thread(target=self.pi.stop_printing)
+        stop_printing.start()
+        stop_printing.join()
 
-    # def terminate_current_print_process(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     if self.current_print_process is not None:
-    #         self.current_print_process.terminate()
-    #         logger.debug("Blocking until current print process dead")
-    #         self.current_print_process.join()
+    def start_print_process(self, lines):
+        logger.debug(FUNCTION_CALL_MSG)
+        self.current_print_process = Process(
+            target=self.pi.print_lines,
+            kwargs={'lines': lines}
+        )
+        self.current_print_process.daemon = True
+        self.current_print_process.start()
+        self.print_processes.append(self.current_print_process)
 
-    # def print_processes_cleanup(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     logger.debug(f"{len(self.print_processes)} threads to clean up")
-    #     while len(self.print_processes) > 0:
-    #         self.print_processes[0].terminate()
-    #         logger.debug("Blocking for each cleanup step")
-    #         self.print_processes[0].join()
-    #         self.print_processes.pop(0)
+        # def terminate_current_print_process(self):
+        #     logger.debug(FUNCTION_CALL_MSG)
+        #     if self.current_print_process is not None:
+        #         self.current_print_process.terminate()
+        #         logger.debug("Blocking until current print process dead")
+        #         self.current_print_process.join()
 
-    # def cleanup(self):
-    #     self.terminate_current_print_process()
-    #     self.print_processes_cleanup()
-    #     self.pi.lcd_cleanup()
+        # def print_processes_cleanup(self):
+        #     logger.debug(FUNCTION_CALL_MSG)
+        #     logger.debug(f"{len(self.print_processes)} threads to clean up")
+        #     while len(self.print_processes) > 0:
+        #         self.print_processes[0].terminate()
+        #         logger.debug("Blocking for each cleanup step")
+        #         self.print_processes[0].join()
+        #         self.print_processes.pop(0)
 
-    # def full_cleanup(self):
-    #     self.terminate_current_print_process()
-    #     self.print_processes_cleanup()
-    #     self.pi.lcd_cleanup()
-    #     logger.debug("Terminating Pi")
-    #     # self.pi.terminate()
-    #     os.killpg(self.pi.pid, signal.SIGUSR1)
-    #     logger.debug("Joining Pi To Main Thread")
-    #     self.pi.join()
-    #     logger.debug("Starting Self again")
-    #     self.startup()
+        # def cleanup(self):
+        #     self.terminate_current_print_process()
+        #     self.print_processes_cleanup()
+        #     self.pi.lcd_cleanup()
 
-    # def back_button_press_override(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     self.pi.back_button.latest_event = 'press'
+        # def full_cleanup(self):
+        #     self.terminate_current_print_process()
+        #     self.print_processes_cleanup()
+        #     self.pi.lcd_cleanup()
+        #     logger.debug("Terminating Pi")
+        #     # self.pi.terminate()
+        #     os.killpg(self.pi.pid, signal.SIGUSR1)
+        #     logger.debug("Joining Pi To Main Thread")
+        #     self.pi.join()
+        #     logger.debug("Starting Self again")
+        #     self.startup()
 
-    # def back_button_hold_override(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     pressed_time = 0
-    #     try:
-    #         if self.pi.back_button.latest_event:
-    #             if self.pi.back_button.latest_event == 'hold':
-    #                 pressed_time = self.pi.back_button.pressed_time
-    #                 logger.debug(f"Hold After Hold (Back, {pressed_time} seconds) - No Action")
-    #                 if self.pi.back_button.is_long_hold_time():
-    #                     self.pi.back_button.hold_repeat = False
-    #                     self.cleanup()
-    #                     self.start_print_process(["Release To", "Shut Down"])
-    #                     # self.pi.shutdown_message()
-    #                     # self.pi.back_button.latest_event = 'long_hold'
-    #                     # self.pi.shutdown()
+        # def back_button_press_override(self):
+        #     logger.debug(FUNCTION_CALL_MSG)
+        #     self.pi.back_button.latest_event = 'press'
 
-    #             if self.pi.back_button.latest_event == 'release':
-    #                 logger.debug("Hold After Release (Back) - No Action")
+        # def back_button_hold_override(self):
+        #     logger.debug(FUNCTION_CALL_MSG)
+        #     pressed_time = 0
+        #     try:
+        #         if self.pi.back_button.latest_event:
+        #             if self.pi.back_button.latest_event == 'hold':
+        #                 pressed_time = self.pi.back_button.pressed_time
+        #                 logger.debug(f"Hold After Hold (Back, {pressed_time} seconds) - No Action")
+        #                 if self.pi.back_button.is_long_hold_time():
+        #                     self.pi.back_button.hold_repeat = False
+        #                     self.cleanup()
+        #                     self.start_print_process(["Release To", "Shut Down"])
+        #                     # self.pi.shutdown_message()
+        #                     # self.pi.back_button.latest_event = 'long_hold'
+        #                     # self.pi.shutdown()
 
-    #             if self.pi.back_button.latest_event == 'press':
-    #                 logger.debug("Hold After Press (Back) - Cleanup Processes")
-    #                 # self.full_cleanup()
-    #                 # self.pi.stream_lines(['Shutting Down', 'Byeee!'])
-    #     finally:
-    #         self.pi.back_button.latest_event = 'hold'
-    #         self.pi.back_button.latest_hold_time = pressed_time
+        #             if self.pi.back_button.latest_event == 'release':
+        #                 logger.debug("Hold After Release (Back) - No Action")
 
-    # def back_button_release_override(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     try:
-    #         if self.pi.back_button.latest_event:
-    #             if self.pi.back_button.latest_event == 'hold':
-    #                 latest_hold_time = self.pi.back_button.latest_hold_time
-    #                 logger.debug(f"Release After Hold (Back, {latest_hold_time} seconds) - No Action")
-    #                 if self.pi.back_button.was_latest_hold_long():
-    #                     self.cleanup()
-    #                     self.start_print_process(["Byeeeee...", ""])
-    #                     self.current_print_process.join()
-    #                     self.pi.shutdown2()
+        #             if self.pi.back_button.latest_event == 'press':
+        #                 logger.debug("Hold After Press (Back) - Cleanup Processes")
+        #                 # self.full_cleanup()
+        #                 # self.pi.stream_lines(['Shutting Down', 'Byeee!'])
+        #     finally:
+        #         self.pi.back_button.latest_event = 'hold'
+        #         self.pi.back_button.latest_hold_time = pressed_time
 
-    #             if self.pi.back_button.latest_event == 'release':
-    #                 logger.debug("Release After Release (Back) - No Action")
+        # def back_button_release_override(self):
+        #     logger.debug(FUNCTION_CALL_MSG)
+        #     try:
+        #         if self.pi.back_button.latest_event:
+        #             if self.pi.back_button.latest_event == 'hold':
+        #                 latest_hold_time = self.pi.back_button.latest_hold_time
+        #                 logger.debug(f"Release After Hold (Back, {latest_hold_time} seconds) - No Action")
+        #                 if self.pi.back_button.was_latest_hold_long():
+        #                     self.cleanup()
+        #                     self.start_print_process(["Byeeeee...", ""])
+        #                     self.current_print_process.join()
+        #                     self.pi.shutdown2()
 
-    #             if self.pi.back_button.latest_event == 'press':
-    #                 logger.debug("Release After Press (Back) - No Action")
-    #     finally:
-    #         self.pi.back_button.latest_event = 'release'
+        #             if self.pi.back_button.latest_event == 'release':
+        #                 logger.debug("Release After Release (Back) - No Action")
+
+        #             if self.pi.back_button.latest_event == 'press':
+        #                 logger.debug("Release After Press (Back) - No Action")
+        #     finally:
+        #         self.pi.back_button.latest_event = 'release'
 
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -220,7 +227,6 @@ class RandomBoye(Process):
         finally:
             self.pi.front_button.latest_event = 'hold'
             self.pi.front_button.latest_hold_time = pressed_time
-        # self.pi.front_button.latest_event = 'hold'
 
     def front_button_release_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -240,16 +246,16 @@ class RandomBoye(Process):
 
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Release After Press - Random Record")
-        #             self.terminate_current_print_process()
-        #             if self.state in ['INSTRUCTIONS']:
-        #                 logger.debug("Release After Press - Random Record")
-        #                 self.start_print_process(self.random_record_lines())
-        #                 self.state = 'RECORD'
-        #             elif self.state in ['STARTUP', 'RECORD']:
-        #                 logger.debug("Release After Press - Print Instructions")
-        #                 self.start_print_process(self.instructions_lines())
-        #                 self.state = 'INSTRUCTIONS'
+                    self.cancel_any_print_processes()
+                    # self.terminate_current_print_process()
+                    if self.state in ['INSTRUCTIONS']:
+                        logger.debug("Release After Press - Random Record")
+                        self.start_print_process(self.random_record_lines())
+                        self.state = 'RECORD'
+                    elif self.state in ['STARTUP', 'RECORD']:
+                        logger.debug("Release After Press - Print Instructions")
+                        self.start_print_process(self.instructions_lines())
+                        self.state = 'INSTRUCTIONS'
 
         finally:
             self.pi.front_button.latest_event = 'release'
-        # self.pi.front_button.latest_event = 'release'
