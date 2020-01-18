@@ -4,6 +4,7 @@ from logs.config import logger
 from multiprocessing import Process
 import signal
 import time
+import os
 logger = logger(__name__)
 
 
@@ -132,7 +133,8 @@ class RandomBoye(Process):
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
         logger.debug("Terminating Pi")
-        self.pi.terminate()
+        # self.pi.terminate()
+        os.killpg(self.pi.pid)
         logger.debug("Joining Pi To Main Thread")
         self.pi.join()
         logger.debug("Starting Self again")
