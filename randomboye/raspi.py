@@ -260,10 +260,10 @@ class RaspberryPi(Process):
         logger.debug("Cleared print_ok")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
-        self.print_jobs_done.wait()
-        logger.debug("Print jobs done set")
-        self.lcd_printer.lcd_cleanup()
-        logger.debug("Done cleaning up LCD")
+        # self.print_jobs_done.wait()
+        # logger.debug("Print jobs done set")
+        # self.lcd_printer.lcd_cleanup()
+        # logger.debug("Done cleaning up LCD")
         self.print_ok.set()
 
     def run(self):
@@ -340,7 +340,7 @@ class RaspberryPi(Process):
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
             while True:
-                self.pi.print_jobs_done.clear()
+                # self.pi.print_jobs_done.clear()
                 if self.pi.print_ok.isSet():
                     print_job = self.pi.print_jobs.get()
                     self.run_print_job(print_job)
@@ -349,7 +349,11 @@ class RaspberryPi(Process):
                     while not self.pi.print_jobs.empty():
                         print_job = self.pi.print_jobs.get()
                         logger.debug(f"Print job {print_job} not executed")
-                self.pi.print_jobs_done.set()
+                    else:
+                        self.lcd_cleanup()
+                        self.pi.print_ok.set()
+
+                # self.pi.print_jobs_done.set()
 
 
 class ButtonWrapper(Button):
