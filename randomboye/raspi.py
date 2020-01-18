@@ -255,9 +255,13 @@ class RaspberryPi(Process):
         """
         logger.debug(FUNCTION_CALL_MSG)
         self.print_ok.clear()
+        logger.debug("Cleared print_ok")
         self.print_framebuffers_done.wait()
+        logger.debug("Framebuffers done set")
         self.print_jobs_done.wait()
+        logger.debug("Print jobs done set")
         self.lcd_printer.lcd_cleanup()
+        logger.debug("Done cleaning up LCD")
         self.print_ok.set()
 
     def run(self):
