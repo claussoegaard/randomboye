@@ -67,7 +67,7 @@ class RaspberryPi(Process):
 
         self.back_led = LED(self.back_led_gpio)
 
-        self.startup_method = self.set_startup_method()
+        self.startup_method = self.set_startup_method
 
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
