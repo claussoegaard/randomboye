@@ -34,9 +34,10 @@ class RandomBoye(object):
         self.pi.back_button.latest_event = None
         self.pi.front_button.when_pressed = self.front_button_press_override
         self.pi.front_button.when_held = self.front_button_hold_override
-        self.pi.front_button.when_released = self.front_button_relase_override
+        self.pi.front_button.when_released = self.front_button_release_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
+        self.pi.back_button.when_release = self.back_button_release_override
         self.pi.start()
 
     def get_pi(self, is_test):
@@ -144,6 +145,21 @@ class RandomBoye(object):
         finally:
             self.pi.back_button.latest_event = 'hold'
 
+    def back_button_release_override(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        try:
+            if self.pi.back_button.latest_event:
+                if self.pi.back_button.latest_event == 'hold':
+                    logger.debug("Release After Hold (Back) - No Action")
+
+                if self.pi.back_button.latest_event == 'release':
+                    logger.debug("Release After Release (Back) - No Action")
+
+                if self.pi.back_button.latest_event == 'press':
+                    logger.debug("Release After Press (Back) - No Action")
+        finally:
+            self.pi.back_button.latest_event = 'release'
+
     def front_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.pi.front_button.latest_event = 'press'
@@ -166,7 +182,7 @@ class RandomBoye(object):
         finally:
             self.pi.front_button.latest_event = 'hold'
 
-    def front_button_relase_override(self):
+    def front_button_release_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
             if self.pi.front_button.latest_event:
