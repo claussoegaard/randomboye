@@ -52,12 +52,12 @@ def create_framebuffers(lines, n=16):
     return framebuffers
 
 
-def create_multiple_framebuffers(lines_of_lines, n=16):
+def create_multiple_framebuffers(lines_list, n=16):
     """Just calls create_framebuffers for each item
-    in lines_of_lines.
+    in lines_list.
     """
     logger.debug(FUNCTION_CALL_MSG)
     multiple_framebuffers = []
-    for lines in lines_of_lines:
+    for lines in lines_list:
         multiple_framebuffers.append(create_framebuffers(lines, n))
     return multiple_framebuffers

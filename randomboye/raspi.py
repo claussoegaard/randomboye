@@ -9,7 +9,10 @@ import os
 import signal
 from multiprocessing import Process
 import time
-from randomboye.helpers import create_framebuffers
+from randomboye.helpers import (
+    # create_framebuffers,
+    create_multiple_framebuffers
+)
 
 from logs.config import logger
 logger = logger(__name__)
@@ -148,6 +151,54 @@ class RaspberryPi(Process):
         if end_on_start:
             self.write_framebuffer(framebuffers[0])
 
+    def stream_multiples_of_lines(self, lines_list,
+                                  start_delay=3, end_delay=2, scroll_delay=0.4,
+                                  lines_delay=0.5, end_on_start=True):
+        """
+        lines = [line1, ..., lineN]
+        ergo:
+        lines_list = [[line1, ..., lineN], ..., [line1, ..., lineN]]
+        For each set of lines in lines_list, will do the following:
+        1. Create framebuffers for streaming
+        2. Write the first framebuffer then wait start_delay seconds
+        3. Write the remaining framebuffers with a scroll_delay gap
+        4. Wait end_delay at the last framebuffer
+        5. If end_on_start==True it will then write the first framebuffer again
+        Then after lines_delay it will do the same for the next line in
+        lines_list
+        """
+        logger.debug(FUNCTION_CALL_MSG)
+        if len(lines_list) == 1:
+            lines_delay = 0
+        multiple_framebuffers = create_multiple_framebuffers(lines_list)
+        for framebuffers in multiple_framebuffers:
+            self.write_framebuffers(
+                framebuffers=framebuffers,
+                start_delay=start_delay,
+                end_delay=end_delay,
+                scroll_delay=scroll_delay,
+                end_on_start=end_on_start
+            )
+            time.sleep(lines_delay)
+
+    def stream_lines(self, lines,
+                     start_delay=3, end_delay=2, scroll_delay=0.4,
+                     lines_delay=0.5, end_on_start=True):
+        """
+        Its not very intuitive to pass [[line1, ..., lineN]] to stream_multiples_of_lines
+        when you just want to write a single line, so this just wraps
+        [line1, ..., lineN] in a list and passes to stream_multiples_of_lines
+        """
+        lines_list = [lines]
+        self.stream_multiples_of_lines(
+            lines_list=lines_list,
+            start_delay=start_delay,
+            end_delay=end_delay,
+            scroll_delay=scroll_delay,
+            lines_delay=0,
+            end_on_start=end_on_start
+        )
+
     def default_splash_screen(self):
         smiley = (
             0b00000,
@@ -162,8 +213,9 @@ class RaspberryPi(Process):
         self.lcd.create_char(0, smiley)
         s = chr(0)
         lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
-        framebuffers = create_framebuffers(lines)
-        self.write_framebuffers(framebuffers)
+        # framebuffers = create_framebuffers(lines)
+        # self.write_framebuffers(framebuffers)
+        self.stream_lines(lines)
 
     def default_startup_text(self):
         # smiley = (
@@ -184,11 +236,12 @@ class RaspberryPi(Process):
             ['Loading', '...']
             # [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
-        for lines in startup_steps_lines:
-            framebuffers = create_framebuffers(lines)
-            logger.debug(framebuffers)
-            self.write_framebuffers(framebuffers)
-            time.sleep(0.5)
+        self.stream_multiples_of_lines(startup_steps_lines)
+        # for lines in startup_steps_lines:
+        #     framebuffers = create_framebuffers(lines)
+        #     logger.debug(framebuffers)
+        #     self.write_framebuffers(framebuffers)
+        #     time.sleep(0.5)
 
     def set_startup_method(self):
         self.default_startup_text()
