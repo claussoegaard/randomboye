@@ -136,8 +136,8 @@ class RandomBoye(object):
                     pressed_time = self.pi.back_button.pressed_time
                     logger.debug(f"Hold After Hold (Back, {pressed_time} seconds) - No Action")
                     # if self.pi.back_button.is_long_hold_time():
-                        # self.pi.back_button.latest_event = 'long_hold'
-                        # self.pi.shutdown()
+                    # self.pi.back_button.latest_event = 'long_hold'
+                    # self.pi.shutdown()
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Hold After Release (Back) - No Action")
@@ -148,16 +148,15 @@ class RandomBoye(object):
                     # self.pi.stream_lines(['Shutting Down', 'Byeee!'])
         finally:
             self.pi.back_button.latest_event = 'hold'
+            self.pi.back_button.latest_hold_time = pressed_time
 
     def back_button_release_override(self):
         logger.debug(FUNCTION_CALL_MSG)
         try:
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
-                    logger.debug("Release After Hold (Back) - No Action")
-
-                if self.pi.back_button.latest_event == 'long_hold':
-                    logger.debug("Release After Long Hold (Back) - No Action")
+                    latest_hold_time = self.pi.back_button.latest_hold_time
+                    logger.debug(f"Release After Hold (Back, {latest_hold_time} seconds) - No Action")
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Release After Release (Back) - No Action")
