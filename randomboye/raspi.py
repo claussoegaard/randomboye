@@ -67,7 +67,7 @@ class RaspberryPi(Process):
 
         self.back_led = LED(self.back_led_gpio)
 
-        self.startup_method = None
+        self.startup_method = self.set_startup_method()
 
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -188,7 +188,11 @@ class RaspberryPi(Process):
             framebuffers = create_framebuffers(lines)
             logger.debug(framebuffers)
             self.write_framebuffers(framebuffers)
-            # time.sleep(0.5)
+            time.sleep(0.5)
+
+    def set_startup_method(self):
+        self.default_startup_text()
+        self.default_splash_screen()
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -211,10 +215,7 @@ class RaspberryPi(Process):
 
     def run(self):
         self.lcd_cleanup()
-        if self.startup_method is None:
-            self.default_startup_text()
-        else:
-            self.startup_method()
+        self.startup_method()
         signal.pause()
 
 
