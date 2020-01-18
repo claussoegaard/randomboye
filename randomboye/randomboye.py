@@ -22,6 +22,11 @@ class RandomBoye(object):
         self.print_processes = []
         self.current_print_process = None
         self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
+        # self.Pi = None
+        # Conditional imports
+        global Pi
+        if not is_test:
+            from randomboye.raspi import RaspberryPi as Pi
 
     def start(self):
         self.pi = self.get_pi(self.is_test)
@@ -37,8 +42,8 @@ class RandomBoye(object):
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
-            from randomboye.raspi import RaspberryPi
-            pi = RaspberryPi(shutdown_system=self.shutdown_system)
+            # from randomboye.raspi import RaspberryPi
+            pi = Pi(shutdown_system=self.shutdown_system)
             return pi
         else:
             raise NotImplementedError
