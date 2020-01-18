@@ -281,6 +281,7 @@ class ButtonWrapper(Button):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time, hold_repeat=hold_repeat)
         self.latest_event = None
+        self.latest_hold_time = 0
         self.long_hold_time = long_hold_time
 
     def is_long_hold_time(self):
