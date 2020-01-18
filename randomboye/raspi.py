@@ -96,7 +96,7 @@ class RaspberryPi(Process):
                 print_job_delay = scroll_delay
             self.create_framebuffer_print_job(framebuffer, print_job_delay)
         if end_on_start:
-            self.create_framebuffer_print_job(framebuffer)
+            self.create_framebuffer_print_job(framebuffers[0])
 
     # def lcd_cleanup(self):
     #     logger.debug(FUNCTION_CALL_MSG)
