@@ -53,7 +53,7 @@ class RandomBoye(object):
         self.pi.default_startup_text()
         self.get_discogs_collection()
         time.sleep(1)
-        self.full_cleanup()
+        self.cleanup()
 
     def get_discogs_collection(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -115,6 +115,11 @@ class RandomBoye(object):
             self.print_processes[0].join()
             self.print_processes.pop(0)
 
+    def cleanup(self):
+        self.terminate_current_print_process()
+        self.print_processes_cleanup()
+        self.pi.lcd_cleanup()
+
     def full_cleanup(self):
         self.terminate_current_print_process()
         self.print_processes_cleanup()
@@ -137,7 +142,7 @@ class RandomBoye(object):
                     logger.debug(f"Hold After Hold (Back, {pressed_time} seconds) - No Action")
                     if self.pi.back_button.is_long_hold_time():
                         self.pi.back_button.hold_repeat = False
-                        self.full_cleanup()
+                        self.cleanup()
                         self.start_print_process(["Release To", "Shut Down"])
                         # self.pi.shutdown_message()
                         # self.pi.back_button.latest_event = 'long_hold'
