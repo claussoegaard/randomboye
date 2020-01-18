@@ -8,7 +8,7 @@ from definitions import FUNCTION_CALL_MSG
 import os
 import signal
 from multiprocessing import Process, Queue
-from threading import Thread
+from threading import Thread, Event
 import time
 from randomboye.helpers import (
     # create_framebuffers,
@@ -25,6 +25,11 @@ class RaspberryPi(Process):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
         # self.daemon = False
+
+        self.print_framebuffers_done = Event()
+        self.print_jobs_done = Event()
+        self.print_ok = Event()
+        self.print_ok.set()
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
@@ -84,10 +89,12 @@ class RaspberryPi(Process):
         print jobs in the print_jobs queue
         """
         logger.debug(FUNCTION_CALL_MSG)
-
+        self.print_framebuffers_done.clear()
         # Setup scrolling behavior if more than one framebuffer
         if len(framebuffers) > 1:
             for i, framebuffer in enumerate(framebuffers):
+                if not self.print_ok.isSet():
+                    return
                 scroll_delay = 0
                 if i == 0:
                     scroll_delay = scroll_start_delay
@@ -100,6 +107,7 @@ class RaspberryPi(Process):
         # Scroll delays will be ignored if only one framebuffers
         else:
             self.create_framebuffer_print_job(framebuffers[0], end_delay)
+        self.print_framebuffers_done.set()
 
     def print_multiples_of_lines(self, lines_list,
                                  scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
@@ -209,6 +217,9 @@ class RaspberryPi(Process):
     def create_framebuffer_print_job(self, framebuffer, delay=0):
         logger.debug(FUNCTION_CALL_MSG)
         print_job = (framebuffer, delay)
+        if not self.print_ok.isSet():
+            logger.info(f"{print_job} NOT added to print_queue")
+            return
         self.print_jobs.put(print_job)
         logger.info(f"{print_job} added to print_queue")
 
@@ -230,6 +241,22 @@ class RaspberryPi(Process):
     def back_button__when_released(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.back_led.off()
+
+    def stop_printing(self):
+        """
+        First clears print_ok which should shut
+        down all print process (both actual printing)
+        and any processes that are adding to print_job
+        queue).
+        Once all of these processes are done, print_ok
+        can be set again, at which point this will finish.
+        So starting this as a thread and join() to main thread
+        should make this blocking
+        """
+        self.print_ok.clear()
+        self.print_framebuffers_done.wait()
+        self.print_jobs_done.wait()
+        self.print_ok.set()
 
     def run(self):
         # self.lcd_cleanup()
@@ -304,8 +331,16 @@ class RaspberryPi(Process):
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
             while True:
-                print_job = self.pi.print_jobs.get()
-                self.run_print_job(print_job)
+                self.pi.print_jobs_done.clear()
+                if self.pi.print_ok.isSet():
+                    print_job = self.pi.print_jobs.get()
+                    self.run_print_job(print_job)
+                else:
+                    # If not OK to print, clear out queue
+                    while not self.pi.print_jobs.empty():
+                        print_job = self.pi.print_jobs.get()
+                        logger.debug(f"Print job {print_job} not executed")
+                self.pi.print_jobs_done.set()
 
 
 class ButtonWrapper(Button):
