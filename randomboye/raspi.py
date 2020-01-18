@@ -332,9 +332,10 @@ class RaspberryPi(Process):
             # Always sleeping for at least 0.1
             # to make sure data is done transmitting
             # to the LCD before next write.
-            delay = max(delay, 100)
-            delay_sec = delay / 1000
-            time.sleep(delay_sec)
+            # delay = max(delay, 100)
+            if delay > 0:
+                delay_sec = delay / 1000
+                time.sleep(delay_sec)
 
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
