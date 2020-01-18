@@ -79,29 +79,46 @@ class RaspberryPi(Process):
 
     def print_framebuffers(self, framebuffers,
                            scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
-                           end_on_start=True, end_delay=0):
+                           end_delay=0):
         """Takes N framebuffers and creates N or N+1 (depending on end_on_start)
         print jobs in the print_jobs queue
         """
         logger.debug(FUNCTION_CALL_MSG)
-        if len(framebuffers) == 1:
-            end_on_start = False
-            scroll_start_delay = 0
-        for i, framebuffer in enumerate(framebuffers):
-            print_job_delay = 0
-            if i == 0:
-                print_job_delay = scroll_start_delay
-            elif i == len(framebuffers) - 1:
-                print_job_delay = scroll_end_delay
-            else:
-                print_job_delay = scroll_step_delay
-            self.create_framebuffer_print_job(framebuffer, print_job_delay)
-        if end_on_start:
+
+        # Setup scrolling behavior if more than one framebuffer
+        if len(framebuffers) > 1:
+            for i, framebuffer in enumerate(framebuffers):
+                scroll_delay = 0
+                if i == 0:
+                    scroll_delay = scroll_start_delay
+                elif i == len(framebuffers) - 1:
+                    scroll_delay = scroll_end_delay
+                else:
+                    scroll_delay = scroll_step_delay
+                self.create_framebuffer_print_job(framebuffer, scroll_delay)
             self.create_framebuffer_print_job(framebuffers[0], end_delay)
+        # Scroll delays will be ignored if only one framebuffers
+        else:
+            self.create_framebuffer_print_job(framebuffers[0], end_delay)
+
+        # if len(framebuffers) == 1:
+        #     end_on_start = False
+        #     scroll_start_delay = 0
+        # for i, framebuffer in enumerate(framebuffers):
+        #     print_job_delay = 0
+        #     if i == 0:
+        #         print_job_delay = scroll_start_delay
+        #     elif i == len(framebuffers) - 1:
+        #         print_job_delay = scroll_end_delay
+        #     else:
+        #         print_job_delay = scroll_step_delay
+        #     self.create_framebuffer_print_job(framebuffer, print_job_delay)
+        # if end_on_start:
+        #     self.create_framebuffer_print_job(framebuffers[0], end_delay)
 
     def print_multiples_of_lines(self, lines_list,
                                  scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
-                                 end_on_start=True, end_delay=500):
+                                 end_delay=500):
         """
         lines = [line1, ..., lineN]
         ergo:
@@ -125,13 +142,12 @@ class RaspberryPi(Process):
                 scroll_start_delay=scroll_start_delay,
                 scroll_end_delay=scroll_end_delay,
                 scroll_step_delay=scroll_step_delay,
-                end_on_start=end_on_start,
                 end_delay=end_delay
             )
 
     def print_lines(self, lines,
                     scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
-                    end_on_start=True, end_delay=0):
+                    end_delay=0):
         """
         Its not very intuitive to pass [[line1, ..., lineN]] to print_multiples_of_lines
         when you just want to write a single line, so this just wraps
@@ -143,8 +159,7 @@ class RaspberryPi(Process):
             scroll_start_delay=scroll_start_delay,
             scroll_end_delay=scroll_end_delay,
             scroll_step_delay=scroll_step_delay,
-            end_delay=end_delay,
-            end_on_start=end_on_start
+            end_delay=end_delay
         )
 
     # def shutdown2(self):
