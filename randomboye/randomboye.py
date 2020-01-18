@@ -124,9 +124,12 @@ class RandomBoye(object):
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
+        logger.debug("Terminating Pi")
         self.pi.terminate()
+        logger.debug("Joining Pi To Main Thread")
         self.pi.join()
-        self.pi.start()
+        logger.debug("Starting Self again")
+        self.start()
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
