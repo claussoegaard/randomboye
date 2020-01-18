@@ -33,7 +33,9 @@ def main():
             logger.debug("Exiting script")
             raise SystemExit
 
+    logger.debug("Making randomboye object")
     randomboye = RandomBoye(args.auth_token, args.is_test, args.refresh_collection, args.shutdown_system)
+    logger.debug("Starting randomboye object")
     randomboye.start()
     logger.debug("After randomboye.start() call")
 
