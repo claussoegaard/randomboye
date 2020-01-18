@@ -134,7 +134,7 @@ class RandomBoye(Process):
         self.pi.lcd_cleanup()
         logger.debug("Terminating Pi")
         # self.pi.terminate()
-        os.killpg(self.pi.pid)
+        os.killpg(self.pi.pid, signal.SIGUSR1)
         logger.debug("Joining Pi To Main Thread")
         self.pi.join()
         logger.debug("Starting Self again")
