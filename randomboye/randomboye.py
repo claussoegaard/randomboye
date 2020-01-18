@@ -202,9 +202,9 @@ class RandomBoye(object):
 
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press (Front) - Cleanup Processes")
-                    self.full_cleanup()
-                    self.start_print_process(self.instructions_lines())
-                    self.state = 'INSTRUCTIONS'
+                    # self.full_cleanup()
+                    # self.start_print_process(self.instructions_lines())
+                    # self.state = 'INSTRUCTIONS'
         finally:
             self.pi.front_button.latest_event = 'hold'
 
