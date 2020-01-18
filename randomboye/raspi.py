@@ -263,7 +263,7 @@ class RaspberryPi(Process):
     def run(self):
         # self.lcd_cleanup()
         # self.startup_method()
-        self.lcd_printer.start()
+        # self.lcd_printer.start()
         signal.pause()
 
     class LCDFramebufferPrinter(Process):
