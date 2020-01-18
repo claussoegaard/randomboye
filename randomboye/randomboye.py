@@ -126,7 +126,7 @@ class RandomBoye(object):
         self.pi.lcd_cleanup()
         self.pi.terminate()
         self.pi.join()
-        self.start()
+        self.pi.start()
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)

@@ -35,6 +35,7 @@ def main():
 
     randomboye = RandomBoye(args.auth_token, args.is_test, args.refresh_collection, args.shutdown_system)
     randomboye.start()
+    logger.debug("After randomboye.start() call")
 
 
 if __name__ == '__main__':
