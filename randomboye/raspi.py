@@ -72,7 +72,7 @@ class RaspberryPi(Process):
 
         self.back_led = LED(self.back_led_gpio)
 
-        # self.startup_method = self.set_startup_method
+        self.startup_method = self.set_startup_method
 
         self.print_jobs = Queue()
         self.lcd_printer = self.LCDFramebufferPrinter(self)
