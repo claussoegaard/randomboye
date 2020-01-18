@@ -230,6 +230,8 @@ class RandomBoye(Process):
                     logger.debug(f"Release After Hold (Front, {latest_hold_time} seconds) - No Action")
                     if self.pi.front_button.was_latest_hold_long():
                         self.pi.front_button.hold_repeat = True
+                        self.start_print_process(self.instructions_lines())
+                        self.state = 'INSTRUCTIONS'
                         # self.full_cleanup()
 
                 if self.pi.front_button.latest_event == 'release':
