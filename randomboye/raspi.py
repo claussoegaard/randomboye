@@ -94,11 +94,9 @@ class RaspberryPi(Process):
                 print_job_delay = end_delay
             else:
                 print_job_delay = scroll_delay
-            print_job = (framebuffer, print_job_delay)
-            self.add_to_print_jobs_queue(print_job)
+            self.create_framebuffer_print_job(framebuffer, print_job_delay)
         if end_on_start:
-            print_job = (framebuffer, 0)
-            self.add_to_print_jobs_queue(print_job)
+            self.create_framebuffer_print_job(framebuffer)
 
     # def lcd_cleanup(self):
     #     logger.debug(FUNCTION_CALL_MSG)
@@ -261,7 +259,7 @@ class RaspberryPi(Process):
     #     self.default_startup_text()
     #     self.default_splash_screen()
 
-    def add_to_print_jobs_queue(self, framebuffer, delay=0):
+    def create_framebuffer_print_job(self, framebuffer, delay=0):
         print_job = (framebuffer, delay)
         self.print_jobs.put(print_job)
 
