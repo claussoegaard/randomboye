@@ -2,11 +2,12 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from multiprocessing import Process
+import signal
 import time
 logger = logger(__name__)
 
 
-class RandomBoye(object):
+class RandomBoye(Process):
     """docstring for Randomboye"""
 
     def __init__(self, auth_token, is_test, refresh_collection, shutdown_system):
@@ -28,7 +29,11 @@ class RandomBoye(object):
         if not is_test:
             from randomboye.raspi import RaspberryPi as Pi
 
-    def start(self):
+    def run(self):
+        self.startup()
+        signal.pause()
+
+    def startup(self):
         self.pi = self.get_pi(self.is_test)
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
@@ -131,7 +136,7 @@ class RandomBoye(object):
         logger.debug("Joining Pi To Main Thread")
         self.pi.join()
         logger.debug("Starting Self again")
-        self.start()
+        self.startup()
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)

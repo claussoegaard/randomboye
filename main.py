@@ -1,6 +1,6 @@
 from logs.config import logger
 from randomboye.randomboye import RandomBoye
-from multiprocessing import Process
+# from multiprocessing import Process
 import os
 
 from definitions import FUNCTION_CALL_MSG
@@ -37,9 +37,9 @@ def main():
     logger.debug("Making randomboye object")
     randomboye = RandomBoye(args.auth_token, args.is_test, args.refresh_collection, args.shutdown_system)
     logger.debug("Starting randomboye object")
-    randomboye_process = Process(target=randomboye.start)
-    randomboye_process.start()
-    # randomboye.start()
+    # randomboye_process = Process(target=randomboye.start)
+    # randomboye_process.start()
+    randomboye.start()
     logger.debug("After randomboye.start() call")
 
 
