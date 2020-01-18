@@ -317,6 +317,7 @@ class RaspberryPi(Process):
                 self.validate_print_job(print_job)
             except ValueError as e:
                 logger.debug(e)
+                return
             framebuffer, delay = print_job
             # If all framebuffers are blank
             if framebuffer == [" " * self.pi.lcd_cols] * self.pi.lcd_rows:
