@@ -263,8 +263,9 @@ class RaspberryPi(Process):
         # self.print_jobs_done.wait()
         # logger.debug("Print jobs done set")
         # self.lcd_printer.lcd_cleanup()
-        # logger.debug("Done cleaning up LCD")
-        self.print_ok.set()
+        logger.debug("Waiting For Print OK")
+        self.print_ok.wait()
+        logger.debug("Print OK again")
 
     def run(self):
         # self.lcd_cleanup()
