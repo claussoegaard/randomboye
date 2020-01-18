@@ -37,7 +37,7 @@ class RandomBoye(object):
         self.pi.front_button.when_released = self.front_button_release_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
-        self.pi.back_button.when_release = self.back_button_release_override
+        self.pi.back_button.when_released = self.back_button_release_override
         self.pi.start()
 
     def get_pi(self, is_test):
