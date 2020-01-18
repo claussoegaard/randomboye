@@ -1,7 +1,7 @@
 from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
-from randomboye.helpers import create_framebuffers
+# from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
 import time
 logger = logger(__name__)
@@ -52,47 +52,46 @@ class RandomBoye(object):
         logger.debug(FUNCTION_CALL_MSG)
         self.terminate_current_print_process()
         if self.refresh_collection:
-            starting_framebuffer = [
+            starting_lines = [
                 'Getting Records',
                 'From Discogs...'
             ]
-            starting_framebuffer = create_framebuffers(starting_framebuffer)
+            # starting_framebuffer = create_framebuffers(starting_framebuffer)
         else:
-            starting_framebuffer = [
+            starting_lines = [
                 'Getting Records',
                 'From File...'
             ]
-        starting_framebuffer = create_framebuffers(starting_framebuffer)
-        self.start_print_process(starting_framebuffer)
+        # starting_framebuffer = create_framebuffers(starting_framebuffer)
+        self.start_print_process(starting_lines)
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         record_count = self.dc.collection['record_count']
-        ending_framebuffer = [
+        ending_lines = [
             'Got Collection',
             f'Records: {record_count}'
         ]
-        ending_framebuffer = create_framebuffers(ending_framebuffer)
+        # ending_framebuffer = create_framebuffers(ending_framebuffer)
         self.terminate_current_print_process()
-        self.start_print_process(ending_framebuffer)
+        self.start_print_process(ending_lines)
 
-    def random_record_framebuffers(self):
+    def random_record_lines(self):
         logger.debug(FUNCTION_CALL_MSG)
         random_record = self.dc.get_random_record()
-        artist_and_title = [random_record['record']['artist'], random_record['record']['title']]
-        return create_framebuffers(artist_and_title)
+        return [random_record['record']['artist'], random_record['record']['title']]
+        # return create_framebuffers(artist_and_title)
 
-    def instructions_framebuffers(self):
+    def instructions_lines(self):
         logger.debug(FUNCTION_CALL_MSG)
-        instructions = [
+        return [
             'Press For Random',
             'Record  d[-_-]b'
         ]
-        return create_framebuffers(instructions)
 
-    def start_print_process(self, framebuffers):
+    def start_print_process(self, lines):
         logger.debug(FUNCTION_CALL_MSG)
         self.current_print_process = Process(
-            target=self.pi.write_framebuffers,
-            kwargs={'framebuffers': framebuffers}
+            target=self.pi.stream_lines,
+            kwargs={'lines': lines}
         )
         self.current_print_process.start()
         self.print_processes.append(self.current_print_process)
@@ -136,8 +135,8 @@ class RandomBoye(object):
                 if self.pi.back_button.latest_event == 'press':
                     logger.debug("Hold After Press (Back) - Cleanup Processes")
                     self.full_cleanup()
-                    framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
-                    self.pi.write_framebuffers(framebuffers)
+                    # framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
+                    self.pi.stream_lines(['Shutting Down', 'Byeee!'])
                     # time.sleep(2)
         finally:
             self.pi.back_button.latest_event = 'hold'
@@ -159,7 +158,7 @@ class RandomBoye(object):
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press (Front) - Cleanup Processes")
                     self.full_cleanup()
-                    self.start_print_process(self.instructions_framebuffers())
+                    self.start_print_process(self.instructions_lines())
                     self.state = 'INSTRUCTIONS'
         finally:
             self.pi.front_button.latest_event = 'hold'
@@ -178,11 +177,11 @@ class RandomBoye(object):
                     self.terminate_current_print_process()
                     if self.state in ['INSTRUCTIONS']:
                         logger.debug("Release After Press - Random Record")
-                        self.start_print_process(self.random_record_framebuffers())
+                        self.start_print_process(self.random_record_lines())
                         self.state = 'RECORD'
                     elif self.state in ['STARTUP', 'RECORD']:
                         logger.debug("Release After Press - Print Instructions")
-                        self.start_print_process(self.instructions_framebuffers())
+                        self.start_print_process(self.instructions_lines())
                         self.state = 'INSTRUCTIONS'
 
         finally:
