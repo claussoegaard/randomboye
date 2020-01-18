@@ -50,7 +50,7 @@ class RaspberryPi(Process):
             pin=self.front_button_gpio,
             bounce_time=0.01,
             hold_time=1,
-            # hold_repeat=True
+            hold_repeat=True
         )
 
         self.front_button.when_pressed = self.front_button__when_pressed
