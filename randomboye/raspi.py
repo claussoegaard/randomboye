@@ -273,7 +273,7 @@ class RaspberryPi(Process):
 
 
 class ButtonWrapper(Button):
-    """Only making this wrapper to enable addition attributes
+    """Only making this wrapper to enable additional attributes
     on Button
     """
 
@@ -282,3 +282,6 @@ class ButtonWrapper(Button):
         super().__init__(pin=pin, bounce_time=bounce_time, hold_time=hold_time, hold_repeat=hold_repeat)
         self.latest_event = None
         self.long_hold_time = long_hold_time
+
+    def is_long_hold_time(self):
+        return self.pressed_time > self.long_hold_time

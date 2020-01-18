@@ -133,15 +133,17 @@ class RandomBoye(object):
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
                     logger.debug("Hold After Hold (Back) - Shutdown")
-                    self.pi.shutdown()
+                    if self.pi.back_button.is_long_hold_time():
+                        self.pi.back_button.latest_event = 'long_hold'
+                        # self.pi.shutdown()
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Hold After Release (Back) - No Action")
 
                 if self.pi.back_button.latest_event == 'press':
                     logger.debug("Hold After Press (Back) - Cleanup Processes")
-                    self.full_cleanup()
-                    self.pi.stream_lines(['Shutting Down', 'Byeee!'])
+                    # self.full_cleanup()
+                    # self.pi.stream_lines(['Shutting Down', 'Byeee!'])
         finally:
             self.pi.back_button.latest_event = 'hold'
 
@@ -151,6 +153,9 @@ class RandomBoye(object):
             if self.pi.back_button.latest_event:
                 if self.pi.back_button.latest_event == 'hold':
                     logger.debug("Release After Hold (Back) - No Action")
+
+                if self.pi.back_button.latest_event == 'long_hold':
+                    logger.debug("Release After Long Hold (Back) - No Action")
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Release After Release (Back) - No Action")
