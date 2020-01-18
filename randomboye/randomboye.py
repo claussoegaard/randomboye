@@ -1,7 +1,6 @@
 from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
-# from randomboye.helpers import create_framebuffers
 from multiprocessing import Process
 import time
 logger = logger(__name__)
@@ -13,11 +12,19 @@ class RandomBoye(object):
     def __init__(self, auth_token, is_test, refresh_collection, shutdown_system):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
-        self.shutdown_system = shutdown_system
         self.auth_token = auth_token
+        self.is_test = is_test
         self.refresh_collection = refresh_collection
+        self.shutdown_system = shutdown_system
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
-        self.pi = self.get_pi(is_test)
+        self.pi = None
+        # self.pi.startup_method = self.pi_startup_method_override
+        self.print_processes = []
+        self.current_print_process = None
+        self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
+
+    def start(self):
+        self.pi = self.get_pi(self.is_test)
         self.pi.front_button.latest_event = None
         self.pi.back_button.latest_event = None
         self.pi.front_button.when_pressed = self.front_button_press_override
@@ -25,12 +32,6 @@ class RandomBoye(object):
         self.pi.front_button.when_released = self.front_button_relase_override
         self.pi.back_button.when_held = self.back_button_hold_override
         self.pi.back_button.when_pressed = self.back_button_press_override
-        # self.pi.startup_method = self.pi_startup_method_override
-        self.print_processes = []
-        self.current_print_process = None
-        self.state = 'STARTUP'  # Valids: STARTUP, INSTRUCTIONS, RECORD
-
-    def start(self):
         self.pi.start()
 
     def get_pi(self, is_test):
@@ -56,13 +57,11 @@ class RandomBoye(object):
                 'Getting Records',
                 'From Discogs...'
             ]
-            # starting_framebuffer = create_framebuffers(starting_framebuffer)
         else:
             starting_lines = [
                 'Getting Records',
                 'From File...'
             ]
-        # starting_framebuffer = create_framebuffers(starting_framebuffer)
         self.start_print_process(starting_lines)
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         record_count = self.dc.collection['record_count']
@@ -70,7 +69,6 @@ class RandomBoye(object):
             'Got Collection',
             f'Records: {record_count}'
         ]
-        # ending_framebuffer = create_framebuffers(ending_framebuffer)
         self.terminate_current_print_process()
         self.start_print_process(ending_lines)
 
@@ -78,7 +76,6 @@ class RandomBoye(object):
         logger.debug(FUNCTION_CALL_MSG)
         random_record = self.dc.get_random_record()
         return [random_record['record']['artist'], random_record['record']['title']]
-        # return create_framebuffers(artist_and_title)
 
     def instructions_lines(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -116,6 +113,9 @@ class RandomBoye(object):
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
+        self.pi.terminate()
+        self.pi.join()
+        self.start()
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -135,9 +135,7 @@ class RandomBoye(object):
                 if self.pi.back_button.latest_event == 'press':
                     logger.debug("Hold After Press (Back) - Cleanup Processes")
                     self.full_cleanup()
-                    # framebuffers = create_framebuffers(['Shutting Down', 'Byeee!'])
                     self.pi.stream_lines(['Shutting Down', 'Byeee!'])
-                    # time.sleep(2)
         finally:
             self.pi.back_button.latest_event = 'hold'
 
