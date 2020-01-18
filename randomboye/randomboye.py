@@ -110,7 +110,6 @@ class RandomBoye(Process):
             target=self.pi.print_lines,
             kwargs={'lines': lines}
         )
-        self.current_print_process.daemon = True
         self.current_print_process.start()
         self.print_processes.append(self.current_print_process)
 
