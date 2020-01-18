@@ -345,10 +345,10 @@ class RaspberryPi(Process):
                 self.lcd_cleanup()
             else:
                 self.write_framebuffer(framebuffer)
-            # Always sleeping for at least 0.2
+            # Always sleeping for at least 0.1
             # to make sure data is done transmitting
             # to the LCD before next write.
-            delay = max(delay, 200)
+            delay = max(delay, 100)
             delay_sec = delay / 1000
             time.sleep(delay_sec)
 
