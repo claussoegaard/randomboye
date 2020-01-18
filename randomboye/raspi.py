@@ -294,6 +294,7 @@ class ButtonWrapper(Button):
         self.latest_event = None
         self.latest_hold_time = 0
         self.long_hold_time = long_hold_time
+        dir(super())
 
     def is_long_hold_time(self):
         return self.pressed_time > self.long_hold_time
