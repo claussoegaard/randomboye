@@ -224,21 +224,22 @@ class RandomBoye(Process):
 
     def front_button_release_override(self):
         logger.debug(FUNCTION_CALL_MSG)
-        # try:
-        #     if self.pi.front_button.latest_event:
-        #         if self.pi.front_button.latest_event == 'hold':
-        #             latest_hold_time = self.pi.front_button.latest_hold_time
-        #             logger.debug(f"Release After Hold (Front, {latest_hold_time} seconds) - No Action")
+        try:
+            if self.pi.front_button.latest_event:
+                if self.pi.front_button.latest_event == 'hold':
+                    latest_hold_time = self.pi.front_button.latest_hold_time
+                    logger.debug(f"Release After Hold (Front, {latest_hold_time} seconds) - No Action")
         #             if self.pi.front_button.was_latest_hold_long():
         #                 self.pi.front_button.hold_repeat = True
         #                 self.start_print_process(self.instructions_lines())
         #                 self.state = 'INSTRUCTIONS'
         #                 # self.full_cleanup()
 
-        #         if self.pi.front_button.latest_event == 'release':
-        #             logger.debug("Release After Release - No Action")
+                if self.pi.front_button.latest_event == 'release':
+                    logger.debug("Release After Release - No Action")
 
-        #         if self.pi.front_button.latest_event == 'press':
+                if self.pi.front_button.latest_event == 'press':
+                    logger.debug("Release After Press - Random Record")
         #             self.terminate_current_print_process()
         #             if self.state in ['INSTRUCTIONS']:
         #                 logger.debug("Release After Press - Random Record")
@@ -249,6 +250,6 @@ class RandomBoye(Process):
         #                 self.start_print_process(self.instructions_lines())
         #                 self.state = 'INSTRUCTIONS'
 
-        # finally:
-        #     self.pi.front_button.latest_event = 'release'
-        self.pi.front_button.latest_event = 'release'
+        finally:
+            self.pi.front_button.latest_event = 'release'
+        # self.pi.front_button.latest_event = 'release'

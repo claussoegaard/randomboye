@@ -256,6 +256,7 @@ class RaspberryPi(Process):
         self.print_ok.clear()
         self.print_framebuffers_done.wait()
         self.print_jobs_done.wait()
+        self.lcd_printer.lcd_cleanup()
         self.print_ok.set()
 
     def run(self):
