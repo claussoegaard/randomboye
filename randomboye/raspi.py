@@ -257,8 +257,10 @@ class RaspberryPi(Process):
     #     self.default_splash_screen()
 
     def create_framebuffer_print_job(self, framebuffer, delay=0):
+        logger.debug(FUNCTION_CALL_MSG)
         print_job = (framebuffer, delay)
         self.print_jobs.put(print_job)
+        logger.info(f"{print_job} added to print_queue")
 
     def front_button__when_pressed(self):
         logger.debug(FUNCTION_CALL_MSG)
