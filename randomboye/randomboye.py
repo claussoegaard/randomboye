@@ -207,6 +207,7 @@ class RandomBoye(object):
                     # self.state = 'INSTRUCTIONS'
         finally:
             self.pi.front_button.latest_event = 'hold'
+            self.pi.front_button.latest_hold_time = pressed_time
 
     def front_button_release_override(self):
         logger.debug(FUNCTION_CALL_MSG)
