@@ -2,7 +2,6 @@ from logs.config import logger
 from randomboye.randomboye import RandomBoye
 import os
 
-# from randomboye.raspi import RaspberryPi
 from definitions import FUNCTION_CALL_MSG
 import argparse
 logger = logger(__name__)
