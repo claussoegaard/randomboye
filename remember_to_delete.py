@@ -4,9 +4,9 @@ import time
 pi = raspi.RaspberryPi()
 pi.start()
 
-time.sleep(2)
+print("Waiting For Pi Start (5 secs)")
+time.sleep(5)
 
-time.sleep(2)
 framebuffers = [
     ["Pavement        ", "Slanted And Ench"],
     ["Pavement        ", "lanted And Encha"],

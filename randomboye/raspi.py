@@ -147,24 +147,6 @@ class RaspberryPi(Process):
             end_on_start=end_on_start
         )
 
-    # def stream_lines(self, lines,
-    #                  start_delay=3, end_delay=2, scroll_delay=0.4,
-    #                  lines_delay=0.5, end_on_start=True):
-    #     """
-    #     Its not very intuitive to pass [[line1, ..., lineN]] to stream_multiples_of_lines
-    #     when you just want to write a single line, so this just wraps
-    #     [line1, ..., lineN] in a list and passes to stream_multiples_of_lines
-    #     """
-    #     lines_list = [lines]
-    #     self.stream_multiples_of_lines(
-    #         lines_list=lines_list,
-    #         start_delay=start_delay,
-    #         end_delay=end_delay,
-    #         scroll_delay=scroll_delay,
-    #         lines_delay=0,
-    #         end_on_start=end_on_start
-    #     )
-
     # def shutdown2(self):
     #     logger.debug(FUNCTION_CALL_MSG)
     #     if self.shutdown_system:
@@ -196,53 +178,40 @@ class RaspberryPi(Process):
     #             # This throws some gpiozero related error on exit, but oh well
     #             os.kill(self.pid, signal.SIGUSR1)
 
-    # def default_splash_screen(self):
-    #     smiley = (
-    #         0b00000,
-    #         0b01010,
-    #         0b01010,
-    #         0b00000,
-    #         0b10001,
-    #         0b10001,
-    #         0b01110,
-    #         0b00000,
-    #     )
-    #     self.lcd.create_char(0, smiley)
-    #     s = chr(0)
-    #     lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
-    #     # framebuffers = create_framebuffers(lines)
-    #     # self.write_framebuffers(framebuffers)
-    #     self.stream_lines(lines)
+    def default_splash_screen(self):
+        smiley = (
+            0b00000,
+            0b01010,
+            0b01010,
+            0b00000,
+            0b10001,
+            0b10001,
+            0b01110,
+            0b00000,
+        )
+        self.lcd.create_char(0, smiley)
+        s = chr(0)
+        lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
+        # framebuffers = create_framebuffers(lines)
+        # self.write_framebuffers(framebuffers)
+        self.print_lines(lines)
 
-    # def default_startup_text(self):
-    #     # smiley = (
-    #     #     0b00000,
-    #     #     0b01010,
-    #     #     0b01010,
-    #     #     0b00000,
-    #     #     0b10001,
-    #     #     0b10001,
-    #     #     0b01110,
-    #     #     0b00000,
-    #     # )
-    #     # self.lcd.create_char(0, smiley)
-    #     # s = chr(0)
-    #     startup_steps_lines = [
-    #         ['Loading', '.'],
-    #         ['Loading', '..'],
-    #         ['Loading', '...']
-    #         # [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
-    #     ]
-    #     self.stream_multiples_of_lines(startup_steps_lines)
-    #     # for lines in startup_steps_lines:
-    #     #     framebuffers = create_framebuffers(lines)
-    #     #     logger.debug(framebuffers)
-    #     #     self.write_framebuffers(framebuffers)
-    #     #     time.sleep(0.5)
+    def default_startup_text(self):
+        startup_steps_lines = [
+            ['Loading', '.'],
+            ['Loading', '..'],
+            ['Loading', '...']
+        ]
+        self.print_multiples_of_lines(startup_steps_lines, end_delay=500)
+        # for lines in startup_steps_lines:
+        #     framebuffers = create_framebuffers(lines)
+        #     logger.debug(framebuffers)
+        #     self.write_framebuffers(framebuffers)
+        #     time.sleep(0.5)
 
-    # def set_startup_method(self):
-    #     self.default_startup_text()
-    #     self.default_splash_screen()
+    def set_startup_method(self):
+        self.default_startup_text()
+        self.default_splash_screen()
 
     def create_framebuffer_print_job(self, framebuffer, delay=0):
         logger.debug(FUNCTION_CALL_MSG)
@@ -271,7 +240,7 @@ class RaspberryPi(Process):
 
     def run(self):
         # self.lcd_cleanup()
-        # self.startup_method()
+        self.startup_method()
         self.lcd_printer.start()
         signal.pause()
 
