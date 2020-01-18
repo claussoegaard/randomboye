@@ -101,21 +101,6 @@ class RaspberryPi(Process):
         else:
             self.create_framebuffer_print_job(framebuffers[0], end_delay)
 
-        # if len(framebuffers) == 1:
-        #     end_on_start = False
-        #     scroll_start_delay = 0
-        # for i, framebuffer in enumerate(framebuffers):
-        #     print_job_delay = 0
-        #     if i == 0:
-        #         print_job_delay = scroll_start_delay
-        #     elif i == len(framebuffers) - 1:
-        #         print_job_delay = scroll_end_delay
-        #     else:
-        #         print_job_delay = scroll_step_delay
-        #     self.create_framebuffer_print_job(framebuffer, print_job_delay)
-        # if end_on_start:
-        #     self.create_framebuffer_print_job(framebuffers[0], end_delay)
-
     def print_multiples_of_lines(self, lines_list,
                                  scroll_start_delay=3000, scroll_end_delay=2000, scroll_step_delay=400,
                                  end_delay=500):
@@ -162,36 +147,36 @@ class RaspberryPi(Process):
             end_delay=end_delay
         )
 
-    # def shutdown2(self):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     if self.shutdown_system:
-    #         logger.debug("Shutting down system")
-    #         self.back_led.on()
-    #         os.system("sudo poweroff")
-    #     else:
-    #         logger.debug("Shutting down Pi process")
-    #         # This throws some gpiozero related error on exit, but oh well
-    #         os.kill(self.pid, signal.SIGUSR1)
+    def shutdown2(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        if self.shutdown_system:
+            logger.debug("Shutting down system")
+            self.back_led.on()
+            os.system("sudo poweroff")
+        else:
+            logger.debug("Shutting down Pi process")
+            # This throws some gpiozero related error on exit, but oh well
+            os.kill(self.pid, signal.SIGUSR1)
 
-    # def shutdown(self, hold_time=6):
-    #     logger.debug(FUNCTION_CALL_MSG)
-    #     # find how long the button has been held
-    #     p = self.back_button.pressed_time
-    #     logger.debug(f"Held for {p} seconds")
-    #     # blink rate will increase the longer we hold
-    #     # the button down. E.g., at 2 seconds, use 1/4 second rate.
-    #     self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
-    #     if p > hold_time:
-    #         # Depending on system, either shutdown
-    #         # whole system, or just the object process
-    #         if self.shutdown_system:
-    #             logger.debug("Shutting down system")
-    #             self.back_led.on()
-    #             os.system("sudo poweroff")
-    #         else:
-    #             logger.debug("Shutting down Pi process")
-    #             # This throws some gpiozero related error on exit, but oh well
-    #             os.kill(self.pid, signal.SIGUSR1)
+    def shutdown(self, hold_time=6):
+        logger.debug(FUNCTION_CALL_MSG)
+        # find how long the button has been held
+        p = self.back_button.pressed_time
+        logger.debug(f"Held for {p} seconds")
+        # blink rate will increase the longer we hold
+        # the button down. E.g., at 2 seconds, use 1/4 second rate.
+        self.back_led.blink(on_time=0.5 / p, off_time=0.5 / p)
+        if p > hold_time:
+            # Depending on system, either shutdown
+            # whole system, or just the object process
+            if self.shutdown_system:
+                logger.debug("Shutting down system")
+                self.back_led.on()
+                os.system("sudo poweroff")
+            else:
+                logger.debug("Shutting down Pi process")
+                # This throws some gpiozero related error on exit, but oh well
+                os.kill(self.pid, signal.SIGUSR1)
 
     def default_splash_screen(self):
         smiley = (
@@ -207,8 +192,6 @@ class RaspberryPi(Process):
         self.lcd.create_char(0, smiley)
         s = chr(0)
         lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
-        # framebuffers = create_framebuffers(lines)
-        # self.write_framebuffers(framebuffers)
         self.print_lines(lines)
 
     def default_startup_text(self):
@@ -218,11 +201,6 @@ class RaspberryPi(Process):
             ['Loading', '...']
         ]
         self.print_multiples_of_lines(startup_steps_lines, end_delay=500)
-        # for lines in startup_steps_lines:
-        #     framebuffers = create_framebuffers(lines)
-        #     logger.debug(framebuffers)
-        #     self.write_framebuffers(framebuffers)
-        #     time.sleep(0.5)
 
     def set_startup_method(self):
         self.default_startup_text()
