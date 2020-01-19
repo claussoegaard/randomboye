@@ -271,10 +271,10 @@ class RaspberryPi(Process):
         # self.print_jobs_done.wait()
         # logger.debug("Print jobs done set")
         # self.lcd_printer.lcd_cleanup()
-        logger.debug("Waiting For Print OK")
-        wait_for_print_ok = Thread(target=self.print_ok.wait)
-        wait_for_print_ok.start()
-        wait_for_print_ok.join()
+        # logger.debug("Waiting For Print OK")
+        # wait_for_print_ok = Thread(target=self.print_ok.wait)
+        # wait_for_print_ok.start()
+        # wait_for_print_ok.join()
 
         logger.debug("Print OK again")
 
