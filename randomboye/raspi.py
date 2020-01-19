@@ -371,6 +371,7 @@ class RaspberryPi(Thread):
                         logger.debug(f"Print job {print_job} not executed")
                     else:
                         self.lcd_cleanup()
+                        logger.debug(f"Setting print_ok again")
                         self.pi.print_ok.set()
 
                 # self.pi.print_jobs_done.set()
