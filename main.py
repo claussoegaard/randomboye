@@ -1,15 +1,18 @@
-from logs.config import logger
+from logs.config import get_logger, setup_logging
 from randomboye.randomboye import RandomBoye
 import os
 
 from definitions import FUNCTION_CALL_MSG
 import argparse
-logger = logger(__name__)
 
 
 def main():
 
     # Setup logging
+    setup_logging()
+
+    logger = get_logger(__name__)
+
     logger.debug(FUNCTION_CALL_MSG)
 
     # Setup argparse

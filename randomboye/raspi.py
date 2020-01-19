@@ -13,8 +13,8 @@ from randomboye.helpers import (
     create_multiple_framebuffers
 )
 
-from logs.config import logger
-logger = logger(__name__)
+from logs.config import get_logger
+logger = get_logger(__name__)
 
 
 class RaspberryPi(Process):

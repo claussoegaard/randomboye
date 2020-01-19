@@ -4,8 +4,8 @@ import json
 import discogs_client
 import os
 
-from logs.config import logger
-logger = logger(__name__)
+from logs.config import get_logger
+logger = get_logger(__name__)
 
 
 class DiscogsCollection():

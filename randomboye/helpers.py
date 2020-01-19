@@ -1,6 +1,6 @@
 from definitions import FUNCTION_CALL_MSG
-from logs.config import logger
-logger = logger(__name__)
+from logs.config import get_logger
+logger = get_logger(__name__)
 
 
 def pad(line, n=16, start=0):

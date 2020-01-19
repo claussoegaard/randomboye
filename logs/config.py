@@ -92,6 +92,11 @@ LOGGING_CONFIG = {
 
 
 def setup_logging():
+    """
+    This is a fairly hacky setup that doesn't safeguard much against whether files
+    exist or not and atomic-ness etc. But w/e.
+    """
+
     # Creating logs dir if it doesn't already exist
     if not os.path.exists(full_path_to_logs):
         os.makedirs(full_path_to_logs)
@@ -143,7 +148,7 @@ def setup_logging():
 
     # At this point, yyyy_mm values don't match, so do renaming stuff
 
-    # 1. Copy file_current.log files to archive folder
+    # Copy file_current.log files to archive folder
     for s in ['info', 'debug', 'error']:
         file_name = f"{s}_current.log"
         full_file_name = f"{full_path_to_logs}/{file_name}"
@@ -168,32 +173,6 @@ def setup_logging():
         json.dump(new_metadata_entry, f)
 
 
-def logger(module):
+def get_logger(module):
     dictConfig(LOGGING_CONFIG)
     return logging.getLogger(module)
-
-
-"""
-
-def get_collection_from_file(self):
-    logger.debug(FUNCTION_CALL_MSG)
-    with open(self.absolute_collection_file_path, "r") as f:
-        collection = json.load(f)
-    logger.info(f"Collection with {collection['record_count']} records fetched from disk.")
-    return collection
-
-def write_collection_to_file(self):
-    logger.debug(FUNCTION_CALL_MSG)
-    try:
-        with open(self.absolute_collection_file_path, "w") as f:
-            try:
-                f.seek(0)
-                json.dump(self.collection, f)
-                f.truncate()
-                logger.info(f"Collection with {self.collection['record_count']} records written to disk.")
-            except ValueError as e:
-                logger.error(e)
-
-    except Exception as e:
-        logger.error(e)
-"""

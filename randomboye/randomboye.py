@@ -1,11 +1,11 @@
 from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
-from logs.config import logger
+from logs.config import get_logger
 from multiprocessing import Process
 import signal
 import time
 import os
-logger = logger(__name__)
+logger = get_logger(__name__)
 
 
 class RandomBoye(Process):
