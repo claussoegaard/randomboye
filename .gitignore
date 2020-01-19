@@ -130,3 +130,6 @@ dmypy.json
 
 # Test Scripts File For Adhoc Testing
 test_scripts.py
+
+# Any logs
+/logs/logs/*

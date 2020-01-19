@@ -1,13 +1,14 @@
 import os
-from definitions import ROOT_DIR
+from datetime import datetime
 import logging
+import shutil
+import json
+from definitions import ROOT_DIR
 from logging.config import dictConfig
 
-full_path_to_logs = f"{ROOT_DIR}/logs/logs"
 
-# Creating logs dir if it doesn't already exist
-if not os.path.exists(full_path_to_logs):
-    os.makedirs(full_path_to_logs)
+full_path_to_logs = f"{ROOT_DIR}/logs/logs"
+full_path_to_log_archive = f"{ROOT_DIR}/logs/logs/archive"
 
 # Good example of configs:
 # https://stackoverflow.com/questions/7507825/where-is-a-complete-example-of-logging-config-dictconfig
@@ -58,21 +59,21 @@ LOGGING_CONFIG = {
             'level': 'DEBUG',
             'formatter': 'debug',
             'class': 'logging.FileHandler',
-            'filename': f'{full_path_to_logs}/debug.log',
+            'filename': f'{full_path_to_logs}/debug_current.log',
             'mode': 'a',
         },
         'info_file_handler': {
             'level': 'INFO',
             'formatter': 'info',
             'class': 'logging.FileHandler',
-            'filename': f'{full_path_to_logs}/info.log',
+            'filename': f'{full_path_to_logs}/info_current.log',
             'mode': 'a',
         },
         'error_file_handler': {
             'level': 'WARNING',
             'formatter': 'error',
             'class': 'logging.FileHandler',
-            'filename': f'{full_path_to_logs}/error.log',
+            'filename': f'{full_path_to_logs}/error_current.log',
             'mode': 'a',
         },
     },
@@ -90,6 +91,109 @@ LOGGING_CONFIG = {
 }
 
 
+def setup_logging():
+    # Creating logs dir if it doesn't already exist
+    if not os.path.exists(full_path_to_logs):
+        os.makedirs(full_path_to_logs)
+
+    # Creating log archive dir if it doesn't already exist
+    if not os.path.exists(full_path_to_log_archive):
+        os.makedirs(full_path_to_log_archive)
+
+    # Creating log metadata file if it doesn't exist
+    logs_metadata_file = f"{full_path_to_logs}/logs_metadata.txt"
+    if not os.path.isfile(logs_metadata_file):
+        with open(logs_metadata_file, 'w'):
+            pass
+
+    # Creating log metadata archive file if it doesn't exist
+    logs_metadata_archive_file = f"{full_path_to_logs}/logs_metadata_archive.txt"
+    if not os.path.isfile(logs_metadata_archive_file):
+        with open(logs_metadata_archive_file, 'w'):
+            pass
+
+    now = datetime.today()
+    now_str = now.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    month = datetime(now.year, now.month, 1)
+    month_str = month.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    yyyy_mm = now.strftime("%Y-%m")
+
+    new_metadata_entry = {
+        'timestamp': now_str,
+        'month': month_str,
+        'yyyy_mm': yyyy_mm
+    }
+
+    # If file is empty, create an entry
+    # even if nothing was changed
+    if os.stat(logs_metadata_file).st_size == 0:
+        new_metadata_entry['extra'] = "First Entry"
+        with open(logs_metadata_file, 'a') as f:
+            json.dump(new_metadata_entry, f)
+            f.write(os.linesep)
+
+    # Read the metadata file
+    log_metadata = {}
+    with open(logs_metadata_file, "r") as f:
+        log_metadata = json.load(f)
+
+    # If date of entry is same month as current month, do nothing
+    if yyyy_mm == log_metadata['yyyy_mm']:
+        return
+
+    # At this point, yyyy_mm values don't match, so do renaming stuff
+
+    # 1. Copy file_current.log files to archive folder
+    for s in ['info', 'debug', 'error']:
+        file_name = f"{s}_current.log"
+        full_file_name = f"{full_path_to_logs}/{file_name}"
+        new_file_name = f"{s}_{log_metadata['yyyy_mm']}.log"
+        full_new_file_name = f"{full_path_to_log_archive}/{new_file_name}"
+        shutil.copyfile(
+            full_file_name,
+            full_new_file_name
+        )
+        # Emptying _current file
+        with open(full_file_name, 'w') as f:
+            pass
+
+    # Write old metadata to archive
+    with open(logs_metadata_archive_file, 'a') as f:
+        json.dump(log_metadata, f)
+        f.write(os.linesep)
+
+    new_metadata_entry['extra'] = f"Moved {log_metadata['yyyy_mm']} log files to archive."
+    # Write new metadata to metadata file
+    with open(logs_metadata_file, 'w') as f:
+        json.dump(new_metadata_entry, f)
+
+
 def logger(module):
     dictConfig(LOGGING_CONFIG)
     return logging.getLogger(module)
+
+
+"""
+
+def get_collection_from_file(self):
+    logger.debug(FUNCTION_CALL_MSG)
+    with open(self.absolute_collection_file_path, "r") as f:
+        collection = json.load(f)
+    logger.info(f"Collection with {collection['record_count']} records fetched from disk.")
+    return collection
+
+def write_collection_to_file(self):
+    logger.debug(FUNCTION_CALL_MSG)
+    try:
+        with open(self.absolute_collection_file_path, "w") as f:
+            try:
+                f.seek(0)
+                json.dump(self.collection, f)
+                f.truncate()
+                logger.info(f"Collection with {self.collection['record_count']} records written to disk.")
+            except ValueError as e:
+                logger.error(e)
+
+    except Exception as e:
+        logger.error(e)
+"""
