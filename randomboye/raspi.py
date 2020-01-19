@@ -260,6 +260,11 @@ class RaspberryPi(Process):
         logger.debug("Cleared print_ok")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
+        # In case of already empty queue, this
+        # triggers .get() to return and then
+        # cleanup LCD, cleanout queue, and set
+        # print_ok again.
+        self.print_jobs.put("cleanup")
         # self.print_jobs_done.wait()
         # logger.debug("Print jobs done set")
         # self.lcd_printer.lcd_cleanup()
@@ -281,6 +286,8 @@ class RaspberryPi(Process):
 
         def validate_print_job(self, print_job):
             logger.debug(FUNCTION_CALL_MSG)
+            if print_job == 'cleanup':
+                print_job = ([" " * self.pi.lcd_cols] * self.pi.lcd_rows, 0)
             if len(print_job) != 2 or not isinstance(print_job, tuple):
                 raise ValueError(f"print_job must be tuple with 2 elements ({print_job})")
             if not isinstance(print_job[0], list):
