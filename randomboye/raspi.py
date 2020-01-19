@@ -330,6 +330,7 @@ class RaspberryPi(Process):
             except ValueError as e:
                 logger.debug(e)
                 return
+            logger.debug(print_job)
             framebuffer, delay = print_job
 
             # If all framebuffers are blank
