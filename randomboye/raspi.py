@@ -275,7 +275,7 @@ class RaspberryPi(Thread):
         # wait_for_print_ok.start()
         # wait_for_print_ok.join()
 
-        # logger.debug("Print OK again")
+        logger.debug("Print OK again")
 
     def run(self):
         # self.lcd_cleanup()
