@@ -124,9 +124,11 @@ class RandomBoye(Process):
             self.print_processes.pop(0)
 
     def cleanup(self):
+        self.pi.lock.acquire()
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
+        self.pi.lock.release()
 
     def full_cleanup(self):
         self.terminate_current_print_process()
