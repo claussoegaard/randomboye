@@ -31,6 +31,16 @@ LOGGING_CONFIG = {
             'propagate': False,
             'handlers': ['debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
         },
+        'raspi': {
+            'level': 'DEBUG',
+            'propagate': False,
+            'handlers': ['debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+        },
+        'randomboye': {
+            'level': 'DEBUG',
+            'propagate': False,
+            'handlers': ['debug_console_handler', 'debug_file_handler', 'info_file_handler', 'error_file_handler'],
+        },
         'raspi_io_diagnoser': {
             'level': 'DEBUG',
             'propagate': False,

@@ -51,7 +51,6 @@ class RandomBoye(Process):
     def get_pi(self, is_test):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
-            # from randomboye.raspi import RaspberryPi
             pi = Pi(shutdown_system=self.shutdown_system)
             return pi
         else:

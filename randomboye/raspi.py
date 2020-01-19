@@ -8,10 +8,8 @@ from definitions import FUNCTION_CALL_MSG
 import os
 import signal
 from multiprocessing import Process, Lock
-# from threading import Lock
 import time
 from randomboye.helpers import (
-    # create_framebuffers,
     create_multiple_framebuffers
 )
 
@@ -130,7 +128,6 @@ class RaspberryPi(Process):
         self.lcd.home()
         logger.debug(f"Start Printing {framebuffer}")
         for row in framebuffer:
-
             try:
                 self.lcd.write_string(row)
                 self.lcd.crlf()
@@ -232,8 +229,6 @@ class RaspberryPi(Process):
         self.lcd.create_char(0, smiley)
         s = chr(0)
         lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
-        # framebuffers = create_framebuffers(lines)
-        # self.write_framebuffers(framebuffers)
         self.stream_lines(lines)
 
     def default_startup_text(self):
@@ -302,7 +297,6 @@ class ButtonWrapper(Button):
         self.latest_event = None
         self.latest_hold_time = 0
         self.long_hold_time = long_hold_time
-        # logger.debug(dir(self))
 
     def is_long_hold_time(self):
         return self.pressed_time > self.long_hold_time
