@@ -183,6 +183,7 @@ class RaspberryPi(Process):
         Then after lines_delay it will do the same for the next line in
         lines_list
         """
+        self.lcd_cleanup()
         logger.debug(FUNCTION_CALL_MSG)
         if len(lines_list) == 1:
             lines_delay = 0
