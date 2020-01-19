@@ -55,7 +55,7 @@ class RandomBoye(Process):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
             # from randomboye.raspi import RaspberryPi
-            pi = Pi(print_ok=self.rb_print_ok, shutdown_system=self.shutdown_system)
+            pi = Pi(rb_print_ok=self.rb_print_ok, shutdown_system=self.shutdown_system)
             return pi
         else:
             raise NotImplementedError
@@ -102,6 +102,8 @@ class RandomBoye(Process):
         ]
 
     def cancel_any_print_processes(self):
+        logger.debug("Clearing Print OK")
+        self.rb_print_ok.clear()
         self.pi.stop_printing()
         logger.debug("Waiting For Print OK")
         self.rb_print_ok.wait()
@@ -110,6 +112,18 @@ class RandomBoye(Process):
         # stop_printing.start()
         # stop_printing.join()
         # self.pi.stop_printing()
+
+        # logger.debug(FUNCTION_CALL_MSG)
+        # self.print_ok.clear()
+        # logger.debug("Cleared print_ok")
+        # logger.debug(f"Is it set? {self.print_ok.isSet()}")
+        # self.print_framebuffers_done.wait()
+        # logger.debug("Framebuffers done set")
+        # # In case of already empty queue, this
+        # # triggers .get() to return and then
+        # # cleanup LCD, cleanout queue, and set
+        # # print_ok again.
+        # self.print_jobs.put("cleanup")
 
     def start_print_process(self, lines):
         logger.debug(FUNCTION_CALL_MSG)

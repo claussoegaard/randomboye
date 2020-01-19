@@ -20,7 +20,7 @@ logger = logger(__name__)
 
 
 class RaspberryPi(Process):
-    def __init__(self, print_ok, shutdown_system=False):
+    def __init__(self, rb_print_ok, shutdown_system=False):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
@@ -28,12 +28,12 @@ class RaspberryPi(Process):
 
         self.print_framebuffers_done = Event()
         self.print_framebuffers_done.set()
-        self.print_jobs_done = Event()
-        self.print_jobs_done.set()
-        # self.print_ok = Event()
-        # self.print_ok.set()
+        # self.print_jobs_done = Event()
+        # self.print_jobs_done.set()
+        self.print_ok = Event()
+        self.print_ok.set()
 
-        self.print_ok = print_ok
+        self.rb_print_ok = rb_print_ok
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
@@ -258,9 +258,10 @@ class RaspberryPi(Process):
         should make this blocking
         """
         logger.debug(FUNCTION_CALL_MSG)
-        self.print_ok.clear()
-        logger.debug("Cleared print_ok")
+        # self.print_ok.clear()
+        # logger.debug("Cleared print_ok")
         logger.debug(f"Is it set? {self.print_ok.isSet()}")
+        logger.debug(f"Is it set? {self.rb_print_ok.isSet()}")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
         # In case of already empty queue, this
@@ -276,7 +277,7 @@ class RaspberryPi(Process):
         # wait_for_print_ok.start()
         # wait_for_print_ok.join()
 
-        logger.debug("Print OK again")
+        # logger.debug("Print OK again")
 
     def run(self):
         # self.lcd_cleanup()
