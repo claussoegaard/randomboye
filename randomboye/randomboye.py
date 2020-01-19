@@ -124,11 +124,14 @@ class RandomBoye(Process):
             self.print_processes.pop(0)
 
     def cleanup(self):
+        logger.debug(FUNCTION_CALL_MSG)
         self.pi.lock.acquire()
+        logger.debug("Lock Acquired In Cleanup")
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
         self.pi.lock.release()
+        logger.debug("Lock Released In Cleanup")
 
     def full_cleanup(self):
         self.terminate_current_print_process()
