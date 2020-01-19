@@ -9,7 +9,7 @@ import os
 logger = logger(__name__)
 
 
-class RandomBoye(Process):
+class RandomBoye(Thread):
     """docstring for Randomboye"""
 
     def __init__(self, auth_token, is_test, refresh_collection, shutdown_system):
