@@ -260,8 +260,8 @@ class RaspberryPi(Process):
         logger.debug(FUNCTION_CALL_MSG)
         # self.print_ok.clear()
         # logger.debug("Cleared print_ok")
-        logger.debug(f"Is it set? {self.print_ok.isSet()}")
-        logger.debug(f"Is it set? {self.rb_print_ok.isSet()}")
+        logger.debug(f"print_ok set? {self.print_ok.isSet()}")
+        logger.debug(f"rb_print_ok set? {self.rb_print_ok.isSet()}")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
         # In case of already empty queue, this
@@ -359,6 +359,8 @@ class RaspberryPi(Process):
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
             while True:
+                logger.debug(f"Run and print_ok set? {self.pi.print_ok}")
+                logger.debug(f"Run and rb_print_ok set? {self.pi.rb_print_ok}")
                 # self.pi.print_jobs_done.clear()
                 if self.pi.print_ok.isSet():
                     logger.debug(f"Run and print_ok {self.pi.print_ok}")
