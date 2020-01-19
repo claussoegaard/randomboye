@@ -359,11 +359,12 @@ class RaspberryPi(Process):
         def run(self):
             logger.debug(FUNCTION_CALL_MSG)
             while True:
-                logger.debug(f"Run and print_ok set? {self.pi.print_ok}")
-                logger.debug(f"Run and rb_print_ok set? {self.pi.rb_print_ok}")
+                logger.debug(f"Run and print_ok set? {self.pi.print_ok.isSet()}")
+                logger.debug(f"Run and rb_print_ok set? {self.pi.rb_print_ok.isSet()}")
                 # self.pi.print_jobs_done.clear()
                 if self.pi.print_ok.isSet():
                     logger.debug(f"Run and print_ok {self.pi.print_ok}")
+                    logger.debug(f"Run and rb_print_ok {self.pi.rb_print_ok}")
                     print_job = self.pi.print_jobs.get()
                     self.run_print_job(print_job)
                 else:
