@@ -155,7 +155,7 @@ class RaspberryPi(Process):
         if len(framebuffers) == 1:
             end_on_start = False
             start_delay = 0
-        self.lcd.clear()  # Clearing once in beginning of framebuffer
+        # self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
             if i == 0:
@@ -258,6 +258,7 @@ class RaspberryPi(Process):
         #     time.sleep(0.5)
 
     def set_startup_method(self):
+        self.lcd_cleanup()
         self.default_startup_text()
         self.default_splash_screen()
 
