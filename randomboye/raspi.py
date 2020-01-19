@@ -256,7 +256,7 @@ class RaspberryPi(Process):
         should make this blocking
         """
         logger.debug(FUNCTION_CALL_MSG)
-        self.print_ok.clear()
+        # self.print_ok.clear()
         print_ok.clear()
         logger.debug("Cleared print_ok")
         logger.debug(f"Is it set? {self.print_ok.isSet()}")
