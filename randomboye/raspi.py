@@ -360,11 +360,11 @@ class RaspberryPi(Thread):
                 logger.debug(f"Run and print_ok set? {self.pi.print_ok.isSet()}")
                 # self.pi.print_jobs_done.clear()
                 if self.pi.print_ok.isSet():
-                    logger.debug(f"Run and print_ok {self.pi.print_ok}")
+                    logger.debug("Run and print_ok")
                     print_job = self.pi.print_jobs.get()
                     self.run_print_job(print_job)
                 else:
-                    logger.debug(f"Run and not print_ok {self.pi.print_ok}")
+                    logger.debug("Run and not print_ok")
                     # If not OK to print, clear out queue
                     while not self.pi.print_jobs.empty():
                         print_job = self.pi.print_jobs.get()
