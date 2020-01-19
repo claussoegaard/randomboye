@@ -2,7 +2,7 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 from multiprocessing import Process
-from threading import Thread
+from threading import Thread, Event
 import signal
 import time
 import os
@@ -17,6 +17,8 @@ class RandomBoye(Process):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.auth_token = auth_token
         self.is_test = is_test
+        self.rb_print_ok = Event()
+        self.rb_print_ok.set()
         self.refresh_collection = refresh_collection
         self.shutdown_system = shutdown_system
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
@@ -53,7 +55,7 @@ class RandomBoye(Process):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
             # from randomboye.raspi import RaspberryPi
-            pi = Pi(shutdown_system=self.shutdown_system)
+            pi = Pi(print_ok=self.rb_print_ok, shutdown_system=self.shutdown_system)
             return pi
         else:
             raise NotImplementedError

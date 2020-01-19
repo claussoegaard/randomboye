@@ -20,7 +20,7 @@ logger = logger(__name__)
 
 
 class RaspberryPi(Process):
-    def __init__(self, shutdown_system=False):
+    def __init__(self, print_ok, shutdown_system=False):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
@@ -30,8 +30,10 @@ class RaspberryPi(Process):
         self.print_framebuffers_done.set()
         self.print_jobs_done = Event()
         self.print_jobs_done.set()
-        self.print_ok = Event()
-        self.print_ok.set()
+        # self.print_ok = Event()
+        # self.print_ok.set()
+
+        self.print_ok = print_ok
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
