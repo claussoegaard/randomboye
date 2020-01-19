@@ -244,7 +244,7 @@ class RaspberryPi(Process):
         logger.debug(FUNCTION_CALL_MSG)
         self.back_led.off()
 
-    def stop_printing(self, print_ok):
+    def stop_printing(self):
         """
         First clears print_ok which should shut
         down all print process (both actual printing)
@@ -256,8 +256,7 @@ class RaspberryPi(Process):
         should make this blocking
         """
         logger.debug(FUNCTION_CALL_MSG)
-        # self.print_ok.clear()
-        print_ok.clear()
+        self.print_ok.clear()
         logger.debug("Cleared print_ok")
         logger.debug(f"Is it set? {self.print_ok.isSet()}")
         self.print_framebuffers_done.wait()
@@ -271,7 +270,7 @@ class RaspberryPi(Process):
         # logger.debug("Print jobs done set")
         # self.lcd_printer.lcd_cleanup()
         logger.debug("Waiting For Print OK")
-        print_ok.wait()
+        self.print_ok.wait()
         logger.debug("Print OK again")
 
     def run(self):
