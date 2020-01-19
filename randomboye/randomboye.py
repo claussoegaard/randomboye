@@ -2,7 +2,7 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
 # from multiprocessing import Process
-from threading import Thread, Event
+from threading import Thread
 import signal
 import time
 import os
@@ -17,8 +17,8 @@ class RandomBoye(Thread):
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         self.auth_token = auth_token
         self.is_test = is_test
-        self.rb_print_ok = Event()
-        self.rb_print_ok.set()
+        # self.rb_print_ok = Event()
+        # self.rb_print_ok.set()
         self.refresh_collection = refresh_collection
         self.shutdown_system = shutdown_system
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
@@ -55,7 +55,7 @@ class RandomBoye(Thread):
         logger.debug(FUNCTION_CALL_MSG)
         if not is_test:
             # from randomboye.raspi import RaspberryPi
-            pi = Pi(rb_print_ok=self.rb_print_ok, shutdown_system=self.shutdown_system)
+            pi = Pi(shutdown_system=self.shutdown_system)
             return pi
         else:
             raise NotImplementedError
@@ -102,15 +102,17 @@ class RandomBoye(Thread):
         ]
 
     def cancel_any_print_processes(self):
-        logger.debug("Clearing Print OK")
-        self.rb_print_ok.clear()
-        self.pi.stop_printing()
-        logger.debug("Waiting For Print OK")
-        logger.debug(f"rb_print_ok {self.rb_print_ok}")
-        logger.debug(f"pi print_ok {self.pi.print_ok}")
-        self.rb_print_ok.wait()
-        logger.debug("Print OK")
-        # stop_printing = Thread(target=self.pi.stop_printing)
+        # logger.debug("Clearing Print OK")
+        # self.rb_print_ok.clear()
+        # self.pi.stop_printing()
+        # logger.debug("Waiting For Print OK")
+        # logger.debug(f"rb_print_ok {self.rb_print_ok}")
+        # logger.debug(f"pi print_ok {self.pi.print_ok}")
+        # self.rb_print_ok.wait()
+        # logger.debug("Print OK")
+        stop_printing = Thread(target=self.pi.stop_printing)
+        stop_printing.start()
+        stop_printing.join()
         # stop_printing.start()
         # stop_printing.join()
         # self.pi.stop_printing()

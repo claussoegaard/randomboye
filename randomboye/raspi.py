@@ -20,7 +20,7 @@ logger = logger(__name__)
 
 
 class RaspberryPi(Thread):
-    def __init__(self, rb_print_ok, shutdown_system=False):
+    def __init__(self, shutdown_system=False):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
@@ -32,8 +32,6 @@ class RaspberryPi(Thread):
         # self.print_jobs_done.set()
         self.print_ok = Event()
         self.print_ok.set()
-
-        self.rb_print_ok = rb_print_ok
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
@@ -261,7 +259,6 @@ class RaspberryPi(Thread):
         # self.print_ok.clear()
         # logger.debug("Cleared print_ok")
         logger.debug(f"print_ok set? {self.print_ok.isSet()}")
-        logger.debug(f"rb_print_ok set? {self.rb_print_ok.isSet()}")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
         # In case of already empty queue, this
@@ -272,7 +269,8 @@ class RaspberryPi(Thread):
         # self.print_jobs_done.wait()
         # logger.debug("Print jobs done set")
         # self.lcd_printer.lcd_cleanup()
-        # logger.debug("Waiting For Print OK")
+        logger.debug("Waiting For Print OK")
+        self.print_ok.wait()
         # wait_for_print_ok = Thread(target=self.print_ok.wait)
         # wait_for_print_ok.start()
         # wait_for_print_ok.join()
@@ -360,11 +358,9 @@ class RaspberryPi(Thread):
             logger.debug(FUNCTION_CALL_MSG)
             while True:
                 logger.debug(f"Run and print_ok set? {self.pi.print_ok.isSet()}")
-                logger.debug(f"Run and rb_print_ok set? {self.pi.rb_print_ok.isSet()}")
                 # self.pi.print_jobs_done.clear()
                 if self.pi.print_ok.isSet():
                     logger.debug(f"Run and print_ok {self.pi.print_ok}")
-                    logger.debug(f"Run and rb_print_ok {self.pi.rb_print_ok}")
                     print_job = self.pi.print_jobs.get()
                     self.run_print_job(print_job)
                 else:
