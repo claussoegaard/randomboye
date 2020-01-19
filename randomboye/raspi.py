@@ -338,6 +338,7 @@ class RaspberryPi(Process):
             # If all framebuffers are blank
             if framebuffer == [" " * self.pi.lcd_cols] * self.pi.lcd_rows:
                 self.lcd_cleanup()
+                self.write_framebuffer(framebuffer)
             else:
                 self.write_framebuffer(framebuffer)
             # Always sleeping for at least 0.1
