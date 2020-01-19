@@ -1,7 +1,7 @@
 from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import logger
-from multiprocessing import Process
+# from multiprocessing import Process
 from threading import Thread, Event
 import signal
 import time
@@ -129,7 +129,7 @@ class RandomBoye(Thread):
 
     def start_print_process(self, lines):
         logger.debug(FUNCTION_CALL_MSG)
-        self.current_print_process = Process(
+        self.current_print_process = Thread(
             target=self.pi.print_lines,
             kwargs={'lines': lines}
         )
