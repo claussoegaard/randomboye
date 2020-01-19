@@ -258,6 +258,7 @@ class RaspberryPi(Process):
         logger.debug(FUNCTION_CALL_MSG)
         self.print_ok.clear()
         logger.debug("Cleared print_ok")
+        logger.debug(f"Is it set? {self.print_ok.isSet()}")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
         # In case of already empty queue, this
