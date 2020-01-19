@@ -128,6 +128,7 @@ class RaspberryPi(Process):
             error = f"all rows in framebuffer must be strings, exactly {self.lcd_cols} characters long"
             raise ValueError(error)
         self.lcd.home()
+        logger.debug(f"Start Printing {framebuffer}")
         for row in framebuffer:
 
             try:
