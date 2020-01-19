@@ -7,7 +7,8 @@ from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
 import signal
-from multiprocessing import Process
+from multiprocessing import Process, Lock
+# from threading import Lock
 import time
 from randomboye.helpers import (
     # create_framebuffers,
@@ -23,6 +24,7 @@ class RaspberryPi(Process):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
         GPIO.setwarnings(False)
+        self.lock = Lock()
 
         self.shutdown_system = shutdown_system
         self.front_button_gpio = 4
@@ -116,6 +118,8 @@ class RaspberryPi(Process):
         No need to clear LCD since all cells will be overwritten
         """
         logger.debug(FUNCTION_CALL_MSG)
+        self.lock.acquire()
+        logger.debug("Lock Acquired")
         if len(framebuffer) != self.lcd_rows:
             error = f"framebuffer must have exactly {self.lcd_rows} rows, has {len(framebuffer)}"
             raise ValueError(error)
@@ -125,6 +129,7 @@ class RaspberryPi(Process):
             raise ValueError(error)
         self.lcd.home()
         for row in framebuffer:
+
             try:
                 self.lcd.write_string(row)
                 self.lcd.crlf()
@@ -132,6 +137,8 @@ class RaspberryPi(Process):
                 print("Something went wrong:")
                 print(e)
                 return
+        self.lock.release()
+        logger.debug("Lock Released")
 
     def write_framebuffers(self, framebuffers,
                            start_delay=3, end_delay=2, scroll_delay=0.4,
