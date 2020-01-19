@@ -109,29 +109,33 @@ class RandomBoye(Process):
 
     def terminate_current_print_process(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.pi.lock.acquire()
+        logger.debug("Lock Acquired In Terminate Current")
         if self.current_print_process is not None:
             self.current_print_process.terminate()
             logger.debug("Blocking until current print process dead")
             self.current_print_process.join()
+        self.pi.lock.release()
+        logger.debug("Lock Released In Terminate Current")
 
     def print_processes_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         logger.debug(f"{len(self.print_processes)} threads to clean up")
+        self.pi.lock.acquire()
+        logger.debug("Lock Acquired In Terminate All Prints")
         while len(self.print_processes) > 0:
             self.print_processes[0].terminate()
             logger.debug("Blocking for each cleanup step")
             self.print_processes[0].join()
             self.print_processes.pop(0)
+        self.pi.lock.release()
+        logger.debug("Lock Released In Terminate All Prints")
 
     def cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.pi.lock.acquire()
-        logger.debug("Lock Acquired In Cleanup")
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
-        self.pi.lock.release()
-        logger.debug("Lock Released In Cleanup")
 
     def full_cleanup(self):
         self.terminate_current_print_process()
