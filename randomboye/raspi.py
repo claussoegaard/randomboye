@@ -256,8 +256,8 @@ class RaspberryPi(Thread):
         should make this blocking
         """
         logger.debug(FUNCTION_CALL_MSG)
-        # self.print_ok.clear()
-        # logger.debug("Cleared print_ok")
+        self.print_ok.clear()
+        logger.debug("Cleared print_ok")
         logger.debug(f"print_ok set? {self.print_ok.isSet()}")
         self.print_framebuffers_done.wait()
         logger.debug("Framebuffers done set")
