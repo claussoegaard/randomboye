@@ -108,7 +108,8 @@ class RandomBoye(Thread):
         logger.debug(FUNCTION_CALL_MSG)
         return [
             'Press For Random',
-            'Record  d[-_-]b'
+            # 'Record  d[-_-]b'
+            f'Record        {self.pi.smiley} '
         ]
 
     def start_print_process(self, lines):
