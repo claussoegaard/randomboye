@@ -63,11 +63,11 @@ class RandomBoye(Process):
         logger.debug("Sleep 1")
         time.sleep(1)
         logger.debug("Get Collection")
-        self.get_discogs_collection2()
+        self.get_discogs_collection()
         logger.debug("Sleep 2")
         time.sleep(2)
 
-    def get_discogs_collection2(self):
+    def get_discogs_collection(self):
         logger.debug(FUNCTION_CALL_MSG)
         if self.refresh_collection:
             starting_lines = [
@@ -80,10 +80,11 @@ class RandomBoye(Process):
                 'From File...'
             ]
         logger.debug("Starting Lines")
-        # self.terminate_current_print_process()
         self.start_print_process(starting_lines)
         self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
+        logger.debug("Sleep at least 2 while discogs collection is being fetched")
+        time.sleep(2)
         record_count = self.dc.collection['record_count']
         ending_lines = [
             'Got Collection',
@@ -92,29 +93,9 @@ class RandomBoye(Process):
         self.pi.lock.release()
         logger.debug("Ending Lines")
         self.start_print_process(ending_lines)
-
-    def get_discogs_collection(self):
-        logger.debug(FUNCTION_CALL_MSG)
-        self.terminate_current_print_process()
-        if self.refresh_collection:
-            starting_lines = [
-                'Getting Records',
-                'From Discogs...'
-            ]
-        else:
-            starting_lines = [
-                'Getting Records',
-                'From File...'
-            ]
-        self.start_print_process(starting_lines)
-        self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
-        record_count = self.dc.collection['record_count']
-        ending_lines = [
-            'Got Collection',
-            f'Records: {record_count}'
-        ]
-        self.terminate_current_print_process()
-        self.start_print_process(ending_lines)
+        time.sleep(2)
+        self.start_print_process(self.instructions_lines())
+        self.state = 'INSTRUCTIONS'
 
     def random_record_lines(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -130,6 +111,8 @@ class RandomBoye(Process):
 
     def start_print_process(self, lines):
         logger.debug(FUNCTION_CALL_MSG)
+        # Start by terminating any existing print process
+        self.terminate_current_print_process()
         self.current_print_process = Process(
             target=self.pi.stream_lines,
             kwargs={'lines': lines}
