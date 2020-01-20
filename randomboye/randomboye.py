@@ -66,7 +66,6 @@ class RandomBoye(Process):
         self.get_discogs_collection2()
         logger.debug("Sleep 2")
         time.sleep(2)
-        self.cleanup()
 
     def get_discogs_collection2(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -81,7 +80,7 @@ class RandomBoye(Process):
                 'From File...'
             ]
         logger.debug("Starting Lines")
-        self.terminate_current_print_process()
+        # self.terminate_current_print_process()
         self.start_print_process(starting_lines)
         self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
