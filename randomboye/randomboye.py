@@ -18,7 +18,8 @@ class RandomBoye(Process):
         self.is_test = is_test
         self.refresh_collection = refresh_collection
         self.shutdown_system = shutdown_system
-        self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
+        # self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
+        self.dc = None
         self.pi = None
         self.print_processes = []
         self.current_print_process = None
@@ -63,11 +64,11 @@ class RandomBoye(Process):
         logger.debug("Sleep 1")
         time.sleep(1)
         logger.debug("Get Collection")
-        self.get_discogs_collection()
+        self.get_discogs_collection_startup()
         logger.debug("Sleep 2")
         time.sleep(2)
 
-    def get_discogs_collection(self):
+    def get_discogs_collection_startup(self):
         logger.debug(FUNCTION_CALL_MSG)
         if self.refresh_collection:
             starting_lines = [
