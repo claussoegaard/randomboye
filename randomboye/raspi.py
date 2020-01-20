@@ -30,8 +30,8 @@ class RaspberryPi(IODevice):
 
         self.lcd = CharLCD(
             numbering_mode=GPIO.BOARD,
-            cols=self.lcd_cols,
-            rows=self.lcd_rows,
+            cols=self.output_columns,
+            rows=self.output_rows,
             pin_rs=37,
             pin_e=35,
             pins_data=self.pin_modes[self.bit_mode],
