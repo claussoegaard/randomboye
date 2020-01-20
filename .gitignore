@@ -128,8 +128,13 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Specifics to this repo
+
 # Test Scripts File For Adhoc Testing
 test_scripts.py
 
 # Any logs
 /logs/logs/*
+
+# Discogs collection
+discogs_collection.txt
