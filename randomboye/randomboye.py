@@ -81,6 +81,7 @@ class RandomBoye(Process):
                 'From File...'
             ]
         logger.debug("Starting Lines")
+        self.terminate_current_print_process()
         self.start_print_process(starting_lines)
         self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)

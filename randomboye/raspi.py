@@ -76,8 +76,10 @@ class RaspberryPi(Process):
 
     def lcd_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
+        self.lock.acquire()
         self.lcd.home()
         self.lcd.clear()
+        self.lock.release()
 
     def shutdown2(self):
         logger.debug(FUNCTION_CALL_MSG)
