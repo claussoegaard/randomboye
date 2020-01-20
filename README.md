@@ -1,6 +1,9 @@
 # Randomboye
 Runs on a Raspberry Pi Zero hooked up to two push buttons and a 2x16 LCD, and prints a random record from a Discogs collection.
 
+## Run
+See `main.py` for details about args and how to run.
+
 ## Setup
 Haven't found a pipenv/venv/etc. solution that really clicks so not attempting any requirements.txt stuff, so just install whatever dependencies it complains about needing.. `discogs_client` and some of the GPIO-related libraries for sure, don't remember what else. Make sure to install everything globally as the service itself will run as root (even though the launcher script is executed as `pi` user).
 
