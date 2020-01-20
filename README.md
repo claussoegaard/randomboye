@@ -1,6 +1,8 @@
 # Randomboye
 Runs on a Raspberry Pi Zero hooked up to two push buttons and a 2x16 LCD, and prints a random record from a Discogs collection.
 
+All these notes are basically just for myself year(s) from now when
+
 ## Run
 See `main.py` for details about args and how to run.
 
