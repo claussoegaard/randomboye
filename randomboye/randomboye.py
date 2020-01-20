@@ -2,13 +2,14 @@ from definitions import FUNCTION_CALL_MSG
 from randomboye.discogs_collection import DiscogsCollection
 from logs.config import get_logger
 from multiprocessing import Process
+from threading import Thread
 import signal
 import time
 import os
 logger = get_logger(__name__)
 
 
-class RandomBoye(Process):
+class RandomBoye(Thread):
     """docstring for Randomboye"""
 
     def __init__(self, auth_token, is_test, refresh_collection, shutdown_system):
