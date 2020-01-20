@@ -19,6 +19,7 @@ Setup an API token.
 To run as a service you'll need to do a few things (this is just the solution I'm doing).
 
 **Create service**
+
 Run `sudo nano /etc/systemd/system/randomboye.service` and paste this content:
 ```
 [Unit]
@@ -45,6 +46,7 @@ Alternatively just hardcode the auth-token into the `-a` arg in the launcher scr
 To test/start the service: `sudo systemctl start randomboye.service`. This will start on all subsequent reboots. 
 
 **Troubleshooting Tips**
+
 Sometimes permissions can be finicky when things run as different users and root and whatnot so just some helpful commands in case you're troubleshooting:
 `sudo systemctl status randomboye.service`: Run this after `start` to see how the service is doing. It'll tell you which exceptions the script threw, if any.
 `sudo systemctl disable randomboye.service` to make it not auto-start on reboot. 
