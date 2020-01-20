@@ -81,7 +81,7 @@ class RandomBoye(Process):
             ]
         logger.debug("Starting Lines")
         self.start_print_process(starting_lines)
-        self.pi.lock.acquire()
+        # self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         logger.debug("Sleep at least 2 while discogs collection is being fetched")
         time.sleep(2)
@@ -90,7 +90,7 @@ class RandomBoye(Process):
             'Got Collection',
             f'Records: {record_count}'
         ]
-        self.pi.lock.release()
+        # self.pi.lock.release()
         logger.debug("Ending Lines")
         self.start_print_process(ending_lines)
         time.sleep(2)
