@@ -5,20 +5,23 @@ import time
 from randomboye.helpers import (
     create_multiple_framebuffers
 )
+from threading import Lock
 
 from logs.config import get_logger
 logger = get_logger(__name__)
 
 
 class IODevice(Thread):
-    def __init__(self, shutdown_system=False):
+    def __init__(self, shutdown_system=False, output_rows=2, output_columns=16):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
 
         self.shutdown_system = shutdown_system
 
-        self.output_rows = 2
-        self.output_columns = 16
+        self.lock = Lock()
+
+        self.output_rows = output_rows
+        self.output_columns = output_columns
 
         # Override
         self.print_method = self.default_print_method
@@ -54,9 +57,7 @@ class IODevice(Thread):
         to get these validations for free.
         After that, each inheriting class should implement its own print
         functionality. Whether an LCD screen on a Raspberry Pi, some curses
-        app, maybe pygame, maybe just simple print(), etc. For any printing
-        sensitive to interruptions, like LCD screens, you should surround printing
-        with acquire() and release() calls to a Thread.lock object
+        app, maybe pygame, maybe just simple print(), etc.
         """
         logger.debug(FUNCTION_CALL_MSG)
         logger.debug(f"Doing checks on {framebuffer}")
@@ -66,8 +67,9 @@ class IODevice(Thread):
         if not all([len(row) == self.output_columns and isinstance(row, str) for row in framebuffer]):
             error = f"all rows in framebuffer must be strings, exactly {self.output_columns} characters long"
             raise ValueError(error)
-
+        self.lock.acquire()
         self.print_method(framebuffer)
+        self.lock.release()
 
     def print_framebuffers(self, framebuffers,
                            start_delay=3, end_delay=2, scroll_delay=0.4,

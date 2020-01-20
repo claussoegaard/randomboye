@@ -5,7 +5,6 @@ from multiprocessing import Process
 from threading import Thread
 import signal
 import time
-import os
 logger = get_logger(__name__)
 
 
@@ -59,7 +58,6 @@ class RandomBoye(Thread):
             raise NotImplementedError
 
     def pi_startup_method_override(self):
-        # self.pi.default_startup_text()
         logger.debug("Regular Startup")
         self.pi.set_startup_method()
         logger.debug("Sleep 1")
@@ -83,7 +81,6 @@ class RandomBoye(Thread):
             ]
         logger.debug("Starting Lines")
         self.start_print_process(starting_lines)
-        # self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         logger.debug("Sleep at least 2 while discogs collection is being fetched")
         time.sleep(2)
@@ -92,7 +89,6 @@ class RandomBoye(Thread):
             'Got Collection',
             f'Records: {record_count}'
         ]
-        # self.pi.lock.release()
         logger.debug("Ending Lines")
         self.start_print_process(ending_lines)
         time.sleep(2)
@@ -123,47 +119,38 @@ class RandomBoye(Thread):
         self.current_print_process.start()
         self.print_processes.append(self.current_print_process)
 
+    def terminate_print_process(self, process):
+        logger.debug(FUNCTION_CALL_MSG)
+        # This lock is locked during each framebuffer print,
+        # so this ensures we only kill print processes when
+        # its safe to do so. An LCD is particularly sensitive
+        # to being interrupted in the middle of a data stream,
+        # other print methods might be too
+        self.pi.lock.acquire()
+        logger.debug("Lock Acquired In Terminate Process")
+        process.terminate()
+        logger.debug("Blocking until print process dead")
+        process.join()
+        self.pi.lock.release()
+        logger.debug("Lock Released In Terminate Process")
+
     def terminate_current_print_process(self):
         logger.debug(FUNCTION_CALL_MSG)
-        self.pi.lock.acquire()
-        logger.debug("Lock Acquired In Terminate Current")
         if self.current_print_process is not None:
-            self.current_print_process.terminate()
-            logger.debug("Blocking until current print process dead")
-            self.current_print_process.join()
-        self.pi.lock.release()
-        logger.debug("Lock Released In Terminate Current")
+            self.terminate_print_process(self.current_print_process)
 
     def print_processes_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         logger.debug(f"{len(self.print_processes)} threads to clean up")
-        self.pi.lock.acquire()
-        logger.debug("Lock Acquired In Terminate All Prints")
         while len(self.print_processes) > 0:
-            self.print_processes[0].terminate()
-            logger.debug("Blocking for each cleanup step")
-            self.print_processes[0].join()
+            self.terminate_print_process(self.print_processes[0])
             self.print_processes.pop(0)
-        self.pi.lock.release()
-        logger.debug("Lock Released In Terminate All Prints")
 
     def cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
         self.terminate_current_print_process()
         self.print_processes_cleanup()
         self.pi.lcd_cleanup()
-
-    def full_cleanup(self):
-        self.terminate_current_print_process()
-        self.print_processes_cleanup()
-        self.pi.lcd_cleanup()
-        logger.debug("Terminating Pi")
-        # self.pi.terminate()
-        os.killpg(self.pi.pid, signal.SIGUSR1)
-        logger.debug("Joining Pi To Main Thread")
-        self.pi.join()
-        logger.debug("Starting Self again")
-        self.startup()
 
     def back_button_press_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -190,7 +177,6 @@ class RandomBoye(Thread):
 
                 if self.pi.back_button.latest_event == 'press':
                     logger.debug("Hold After Press (Back) - Cleanup Processes")
-                    # self.full_cleanup()
                     # self.pi.stream_lines(['Shutting Down', 'Byeee!'])
         finally:
             self.pi.back_button.latest_event = 'hold'
@@ -239,7 +225,6 @@ class RandomBoye(Thread):
 
                 if self.pi.front_button.latest_event == 'press':
                     logger.debug("Hold After Press (Front) - Cleanup Processes")
-                    # self.full_cleanup()
                     # self.start_print_process(self.instructions_lines())
                     # self.state = 'INSTRUCTIONS'
         finally:
@@ -257,7 +242,6 @@ class RandomBoye(Thread):
                         self.pi.front_button.hold_repeat = True
                         self.start_print_process(self.instructions_lines())
                         self.state = 'INSTRUCTIONS'
-                        # self.full_cleanup()
 
                 if self.pi.front_button.latest_event == 'release':
                     logger.debug("Release After Release - No Action")
