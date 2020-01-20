@@ -57,10 +57,35 @@ class RandomBoye(Process):
             raise NotImplementedError
 
     def pi_startup_method_override(self):
-        self.pi.default_startup_text()
-        self.get_discogs_collection()
+        # self.pi.default_startup_text()
+        self.pi.set_startup_method()
         time.sleep(1)
+        self.get_discogs_collection2()
+        time.sleep(2)
         self.cleanup()
+
+    def get_discogs_collection2(self):
+        logger.debug(FUNCTION_CALL_MSG)
+        if self.refresh_collection:
+            starting_lines = [
+                'Getting Records',
+                'From Discogs...'
+            ]
+        else:
+            starting_lines = [
+                'Getting Records',
+                'From File...'
+            ]
+        self.start_print_process(starting_lines)
+        self.lock.acquire()
+        self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
+        record_count = self.dc.collection['record_count']
+        ending_lines = [
+            'Got Collection',
+            f'Records: {record_count}'
+        ]
+        self.lock.release()
+        self.start_print_process(ending_lines)
 
     def get_discogs_collection(self):
         logger.debug(FUNCTION_CALL_MSG)

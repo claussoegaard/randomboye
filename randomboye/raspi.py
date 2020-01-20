@@ -46,6 +46,8 @@ class RaspberryPi(Process):
             pins_data=self.pin_modes[self.bit_mode],
         )
 
+        self.lcd_cleanup()
+
         self.front_button = ButtonWrapper(
             pin=self.front_button_gpio,
             bounce_time=0.01,
@@ -155,7 +157,6 @@ class RaspberryPi(Process):
         if len(framebuffers) == 1:
             end_on_start = False
             start_delay = 0
-        # self.lcd.clear()  # Clearing once in beginning of framebuffer
         for i, framebuffer in enumerate(framebuffers):
             self.write_framebuffer(framebuffer)
             if i == 0:
@@ -233,33 +234,14 @@ class RaspberryPi(Process):
         self.stream_lines(lines)
 
     def default_startup_text(self):
-        # smiley = (
-        #     0b00000,
-        #     0b01010,
-        #     0b01010,
-        #     0b00000,
-        #     0b10001,
-        #     0b10001,
-        #     0b01110,
-        #     0b00000,
-        # )
-        # self.lcd.create_char(0, smiley)
-        # s = chr(0)
         startup_steps_lines = [
             ['Loading', '.'],
             ['Loading', '..'],
             ['Loading', '...']
-            # [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
         ]
         self.stream_multiples_of_lines(startup_steps_lines)
-        # for lines in startup_steps_lines:
-        #     framebuffers = create_framebuffers(lines)
-        #     logger.debug(framebuffers)
-        #     self.write_framebuffers(framebuffers)
-        #     time.sleep(0.5)
 
     def set_startup_method(self):
-        self.lcd_cleanup()
         self.default_startup_text()
         self.default_splash_screen()
 
