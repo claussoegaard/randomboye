@@ -7,7 +7,8 @@ from RPi import GPIO
 from definitions import FUNCTION_CALL_MSG
 import os
 import signal
-from multiprocessing import Process, Lock
+from multiprocessing import Lock
+from threading import Thread
 import time
 from randomboye.helpers import (
     create_multiple_framebuffers
@@ -17,7 +18,7 @@ from logs.config import get_logger
 logger = get_logger(__name__)
 
 
-class RaspberryPi(Process):
+class RaspberryPi(Thread):
     def __init__(self, shutdown_system=False):
         super().__init__()
         logger.debug(f"{FUNCTION_CALL_MSG}, {__class__}")
