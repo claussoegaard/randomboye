@@ -77,14 +77,14 @@ class RandomBoye(Process):
                 'From File...'
             ]
         self.start_print_process(starting_lines)
-        self.lock.acquire()
+        self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
         record_count = self.dc.collection['record_count']
         ending_lines = [
             'Got Collection',
             f'Records: {record_count}'
         ]
-        self.lock.release()
+        self.pi.lock.release()
         self.start_print_process(ending_lines)
 
     def get_discogs_collection(self):
