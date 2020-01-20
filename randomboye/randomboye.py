@@ -206,7 +206,7 @@ class RandomBoye(Thread):
                         self.cleanup()
                         self.start_print_process(["Byeeeee...", ""])
                         self.current_print_process.join()
-                        self.pi.shutdown2()
+                        self.pi.shutdown()
 
                 if self.pi.back_button.latest_event == 'release':
                     logger.debug("Release After Release (Back) - No Action")

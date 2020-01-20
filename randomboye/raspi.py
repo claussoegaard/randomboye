@@ -82,18 +82,19 @@ class RaspberryPi(Thread):
         self.lcd.clear()
         self.lock.release()
 
-    def shutdown2(self):
+    def shutdown(self):
         logger.debug(FUNCTION_CALL_MSG)
         if self.shutdown_system:
             logger.debug("Shutting down system")
             self.back_led.on()
             os.system("sudo poweroff")
         else:
-            logger.debug("Shutting down Pi process")
+            raise NotImplementedError
+            # logger.debug("Shutting down Pi process")
             # This throws some gpiozero related error on exit, but oh well
-            os.kill(self.pid, signal.SIGUSR1)
+            # os.kill(self.pid, signal.SIGUSR1)
 
-    def shutdown(self, hold_time=6):
+    def shutdown_old(self, hold_time=6):
         logger.debug(FUNCTION_CALL_MSG)
         # find how long the button has been held
         p = self.back_button.pressed_time
@@ -109,9 +110,10 @@ class RaspberryPi(Thread):
                 self.back_led.on()
                 os.system("sudo poweroff")
             else:
-                logger.debug("Shutting down Pi process")
-                # This throws some gpiozero related error on exit, but oh well
-                os.kill(self.pid, signal.SIGUSR1)
+                raise NotImplementedError
+                # logger.debug("Shutting down Pi process")
+                # # This throws some gpiozero related error on exit, but oh well
+                # os.kill(self.pid, signal.SIGUSR1)
 
     def write_framebuffer(self, framebuffer):
         """Writes single framebuffer to LCD screen.
