@@ -67,9 +67,12 @@ class IODevice(Thread):
         if not all([len(row) == self.output_columns and isinstance(row, str) for row in framebuffer]):
             error = f"all rows in framebuffer must be strings, exactly {self.output_columns} characters long"
             raise ValueError(error)
+        logger.debug(f"About to print {framebuffer}")
         self.lock.acquire()
+        logger.debug("Lock acquired in print_framebuffer")
         self.print_method(framebuffer)
         self.lock.release()
+        logger.debug("Lock released in print_framebuffer")
 
     def print_framebuffers(self, framebuffers,
                            start_delay=3, end_delay=2, scroll_delay=0.4,
