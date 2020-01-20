@@ -10,3 +10,4 @@
 * Consider expanding on the Lock mechanism. One lock for printing, one lock for enabling/disabling buttons maybe?
 * Cleanup logger.debug statements
 * If getting collection from Discogs fails, add fallback to get non-updated from file
+* Add back blinking on shutdown function
