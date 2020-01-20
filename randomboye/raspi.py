@@ -49,6 +49,19 @@ class RaspberryPi(Thread):
 
         self.lcd_cleanup()
 
+        smiley = (
+            0b00000,
+            0b01010,
+            0b01010,
+            0b00000,
+            0b10001,
+            0b10001,
+            0b01110,
+            0b00000,
+        )
+        self.lcd.create_char(0, smiley)
+        self.smiley = chr(0)
+
         self.front_button = ButtonWrapper(
             pin=self.front_button_gpio,
             bounce_time=0.01,
@@ -223,19 +236,7 @@ class RaspberryPi(Thread):
         )
 
     def default_splash_screen(self):
-        smiley = (
-            0b00000,
-            0b01010,
-            0b01010,
-            0b00000,
-            0b10001,
-            0b10001,
-            0b01110,
-            0b00000,
-        )
-        self.lcd.create_char(0, smiley)
-        s = chr(0)
-        lines = [f"{s*3}RASPBERRY{s*4}", f"{s*7}PI{s*7}"]
+        lines = [f"{self.smiley*3}RASPBERRY{self.smiley*4}", f"{self.smiley*7}PI{self.smiley*7}"]
         self.stream_lines(lines)
 
     def default_startup_text(self):
