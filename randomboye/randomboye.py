@@ -58,9 +58,13 @@ class RandomBoye(Process):
 
     def pi_startup_method_override(self):
         # self.pi.default_startup_text()
+        logger.debug("Regular Startup")
         self.pi.set_startup_method()
+        logger.debug("Sleep 1")
         time.sleep(1)
+        logger.debug("Get Collection")
         self.get_discogs_collection2()
+        logger.debug("Sleep 2")
         time.sleep(2)
         self.cleanup()
 
@@ -76,6 +80,7 @@ class RandomBoye(Process):
                 'Getting Records',
                 'From File...'
             ]
+        logger.debug("Starting Lines")
         self.start_print_process(starting_lines)
         self.pi.lock.acquire()
         self.dc = DiscogsCollection(auth_token=self.auth_token, refresh_collection=self.refresh_collection)
@@ -85,6 +90,7 @@ class RandomBoye(Process):
             f'Records: {record_count}'
         ]
         self.pi.lock.release()
+        logger.debug("Ending Lines")
         self.start_print_process(ending_lines)
 
     def get_discogs_collection(self):
