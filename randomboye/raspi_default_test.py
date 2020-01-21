@@ -1,3 +1,4 @@
+import time
 from randomboye.io_device import IODevice
 
 from logs.config import get_logger
@@ -48,12 +49,14 @@ class RaspberryPiDefaultTest(IODevice):
             self.done_printing.wait()
             # self.done_printing.clear()
             # self.lock.acquire()
-            print("Randomboye")
-            print("a, s or d for press, hold, release on front button")
-            print("q, w or e for press, hold, release on back button")
+            # print("Randomboye")
+            # print("a, s or d for press, hold, release on front button")
+            # print("q, w or e for press, hold, release on back button")
             try:
                 bp = input("'Button': ")
                 self.button_press_handler(bp)
+                # Just a hack to avoid race conditions
+                time.sleep(1)
             except ValueError:
                 logger.exception("Caught input exception")
                 logger.debug("Try Again")
