@@ -142,7 +142,6 @@ class RaspberryPi(IODevice):
         ]
         self.stream_multiples_of_lines(startup_steps_lines)
 
-    # TODO: Rename this
     def default_startup_method(self):
         self.default_startup_text()
         self.default_splash_screen()

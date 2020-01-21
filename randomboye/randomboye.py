@@ -101,7 +101,6 @@ class RandomBoye(Thread):
         logger.debug(FUNCTION_CALL_MSG)
         return [
             'Press Button For',
-            # 'Record  d[-_-]b'
             f'Random Record {self.io.smiley} '
         ]
 
