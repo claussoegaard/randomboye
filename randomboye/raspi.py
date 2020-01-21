@@ -77,7 +77,7 @@ class RaspberryPi(IODevice):
 
         self.back_led = LED(self.back_led_gpio)
 
-        self.startup_method = self.set_startup_method
+        self.startup_method = self.default_startup_method
 
     def print_cleanup_method_override(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -143,7 +143,7 @@ class RaspberryPi(IODevice):
         self.stream_multiples_of_lines(startup_steps_lines)
 
     # TODO: Rename this
-    def set_startup_method(self):
+    def default_startup_method(self):
         self.default_startup_text()
         self.default_splash_screen()
 

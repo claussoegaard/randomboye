@@ -1,11 +1,12 @@
 from definitions import FUNCTION_CALL_MSG
 import signal
+from unittest.mock import Mock
 from threading import Thread
 import time
 from randomboye.helpers import (
     create_multiple_framebuffers
 )
-from threading import Lock
+from threading import Lock, Event
 
 from logs.config import get_logger
 logger = get_logger(__name__)
@@ -20,6 +21,9 @@ class IODevice(Thread):
 
         self.lock = Lock()
 
+        self.done_printing = Event()
+        self.done_printing.set()
+
         self.output_rows = output_rows
         self.output_columns = output_columns
 
@@ -27,17 +31,20 @@ class IODevice(Thread):
         self.print_method = self.default_print_method
         self.print_cleanup_method = self.default_print_cleanup
 
-        # self.front_button = None
+        # Override these with Button in Raspberry Pi class, and
+        # whatever other mechanism for triggering events you
+        # have in other test setups
+        self.front_button = Mock()
+        self.front_button.when_pressed = self.front_button__when_pressed
+        self.front_button.when_held = self.front_button__when_held
+        self.front_button.when_released = self.front_button__when_released
 
-        # self.front_button.when_pressed = self.front_button__when_pressed
-        # self.front_button.when_held = self.front_button__when_held
-        # self.front_button.when_released = self.front_button__when_released
+        self.back_button = Mock()
+        self.back_button.when_pressed = self.back_button__when_pressed
+        self.back_button.when_held = self.back_button__when_held
+        self.back_button.when_released = self.back_button__when_released
 
-        # self.back_button = None
-
-        # self.back_button.when_pressed = self.back_button__when_pressed
-        # self.back_button.when_held = self.back_button__when_held
-        # self.back_button.when_released = self.back_button__when_released
+        self.startup_method = self.default_startup_method
 
     def default_print_cleanup(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -47,6 +54,9 @@ class IODevice(Thread):
         logger.debug(FUNCTION_CALL_MSG)
         for row in framebuffer:
             print(row)
+
+    def default_startup_method(self):
+        logger.debug(FUNCTION_CALL_MSG)
 
     def shutdown(self):
         logger.debug(FUNCTION_CALL_MSG)
@@ -79,8 +89,8 @@ class IODevice(Thread):
                            end_on_start=True):
         """
         """
-        # Overriding stuff if framebuffers only has one frame
         self.print_cleanup_method()
+        # Overriding stuff if framebuffers only has one frame
         if len(framebuffers) == 1:
             end_on_start = False
             start_delay = 0
@@ -112,6 +122,8 @@ class IODevice(Thread):
         lines_list
         """
         logger.debug(FUNCTION_CALL_MSG)
+        # All print calls go through this method, so setting flag here only
+        self.done_printing.clear()
         if len(lines_list) == 1:
             lines_delay = 0
         multiple_framebuffers = create_multiple_framebuffers(lines_list)
@@ -124,6 +136,7 @@ class IODevice(Thread):
                 end_on_start=end_on_start
             )
             time.sleep(lines_delay)
+        self.done_printing.set()
 
     def stream_lines(self, lines,
                      start_delay=3, end_delay=2, scroll_delay=0.4,
